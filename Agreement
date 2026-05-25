@@ -135,7 +135,7 @@
                     </button>
                 </div>
 
-                <!-- 匯入 / 匯出控制 (新功能) -->
+                <!-- 匯入 / 匯出控制 -->
                 <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                     <button onclick="triggerExport()" class="px-2.5 py-1 hover:bg-white text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯出合約檔案進行備份或傳給伴侶">
                         <i class="fa-solid fa-download"></i> 匯出
@@ -414,13 +414,20 @@
             const savedData = localStorage.getItem('ldr_agreement_data');
             if (savedData) {
                 try {
-                    agreementData = JSON.parse(savedData);
-                    // 升級舊資料：確保每個規則都有 category 欄位
-                    agreementData.sections.forEach(sec => {
-                        sec.rules.forEach(rule => {
-                            if (!rule.category) rule.category = "basic";
+                    const parsed = JSON.parse(savedData);
+                    // 檢查解析出來的資料是否包含合約主結構，若沒有則套用預設範本
+                    if (parsed && parsed.sections && parsed.sections.length > 0) {
+                        agreementData = parsed;
+                        // 升級舊資料：確保每個規則都有 category 欄位
+                        agreementData.sections.forEach(sec => {
+                            if (!sec.rules) sec.rules = [];
+                            sec.rules.forEach(rule => {
+                                if (!rule.category) rule.category = "basic";
+                            });
                         });
-                    });
+                    } else {
+                        agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+                    }
                 } catch(e) {
                     agreementData = JSON.parse(JSON.stringify(defaultTemplate));
                 }
@@ -479,7 +486,7 @@
             }, 1500);
         }
 
-        // 匯出約定書設定檔 (新增)
+        // 匯出約定書設定檔
         function triggerExport() {
             // 先確保取得最新修改
             saveAgreementData();
@@ -635,6 +642,8 @@
         }
 
         function renderAgreement() {
+            if (!agreementData) return;
+            
             // 寫入固定文字欄位
             document.getElementById('docTitle').innerText = agreementData.title || "";
             document.getElementById('docEffectiveDate').innerText = agreementData.effectiveDate || "";
@@ -1061,8 +1070,8 @@
             if (confirm("此操作會清除所有手寫簽名與客製化的修改。確定要回復成初始的「遠距期間相互約定書」嗎？")) {
                 agreementData = JSON.parse(JSON.stringify(defaultTemplate));
                 localStorage.removeItem('ldr_agreement_data');
-                localStorage.removeItem('ldr_signature_a');
-                localStorage.removeItem('ldr_signature_b');
+                localStorage.removeItem('ldr_signature_canvasA');
+                localStorage.removeItem('ldr_signature_canvasB');
                 
                 loadAgreementData();
                 clearSignature('canvasA');
