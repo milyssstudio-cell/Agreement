@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遠距期間相互約定書 - 互動編輯與顏色分類版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 繽紛特效庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fef8f8;
+            background-image: radial-gradient(#fbcfe8 0.5px, transparent 0.5px), radial-gradient(#fbcfe8 0.5px, #fef8f8 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        
+        .romantic-title {
+            font-family: 'Playfair Display', 'Noto Sans TC', serif;
+        }
+
+        .signature-font {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* 內容編輯模式下的外框暗示 */
+        [contenteditable="true"] {
+            outline: none;
+            transition: all 0.2s;
+            border-bottom: 1px dashed #f472b6;
+            padding-bottom: 2px;
+        }
+        [contenteditable="true"]:focus {
+            background-color: #fff1f2;
+            border-bottom: 2px solid #ec4899;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        /* 類別專屬樣式 - 點選後的背景 */
+        .category-basic-bg { background-color: rgba(243, 232, 255, 0.45); }
+        .category-flexible-bg { background-color: rgba(209, 250, 229, 0.45); }
+        .category-security-bg { background-color: rgba(255, 228, 230, 0.45); }
+
+        /* 拖曳時的視覺反饋 */
+        .dragging {
+            opacity: 0.5;
+            border: 2px dashed #f472b6 !important;
+            transform: scale(0.98);
+        }
+
+        /* 列印專用樣式 */
+        @media print {
+            body {
+                background: white !important;
+                background-image: none !important;
+                color: #111827 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-card {
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .clause-item {
+                page-break-inside: avoid;
+            }
+            .signature-box {
+                border: 1px solid #d1d5db !important;
+            }
+        }
+
+        /* 捲軸美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fbcfe8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #db2777;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16 text-slate-800">
+
+    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-md border-b border-rose-100 no-print">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+            <!-- 進度顯示 -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="p-2 bg-rose-100 text-rose-600 rounded-full">
+                    <i class="fa-solid fa-heart-circle-check text-xl animate-pulse"></i>
+                </div>
+                <div class="flex-1 md:flex-initial">
+                    <div class="text-xs text-rose-500 font-bold">雙方共識進度</div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-32 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div id="progressBar" class="bg-gradient-to-r from-rose-400 to-pink-500 h-2.5 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <span id="progressPercent" class="text-sm font-extrabold text-rose-600">0%</span>
+                        <span id="progressRatio" class="text-xs text-slate-500">(0/0)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制按鈕組 -->
+            <div class="flex items-center gap-2 flex-wrap justify-end w-full md:w-auto">
+                <!-- 儲存修改按鈕 (僅在編輯模式顯示) -->
+                <button id="btnManualSave" onclick="triggerManualSave()" class="hidden px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5">
+                    <i id="saveBtnIcon" class="fa-regular fa-floppy-disk"></i> <span id="saveBtnText">儲存修改</span>
+                </button>
+
+                <!-- 模式切換器 -->
+                <div class="bg-rose-50 p-1 rounded-xl border border-rose-200 flex">
+                    <button id="btnCheckMode" onclick="setMode('check')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm">
+                        <i class="fa-solid fa-lock"></i> 唯讀與確認
+                    </button>
+                    <button id="btnEditMode" onclick="setMode('edit')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600">
+                        <i class="fa-solid fa-pen-to-square"></i> 自由編輯
+                    </button>
+                </div>
+
+                <!-- 匯入 / 匯出控制 -->
+                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button onclick="triggerExport()" class="px-2.5 py-1 hover:bg-white text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯出合約檔案進行備份或傳給伴侶">
+                        <i class="fa-solid fa-download"></i> 匯出
+                    </button>
+                    <button onclick="openImportModal()" class="px-2.5 py-1 hover:bg-white text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯入伴侶編輯好的合約檔案">
+                        <i class="fa-solid fa-upload"></i> 匯入
+                    </button>
+                </div>
+
+                <!-- 功能選單 -->
+                <button onclick="copyToClipboard()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 hover:text-rose-600 rounded-xl transition-all" title="複製條款純文字">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+                <button onclick="window.print()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 hover:text-rose-600 rounded-xl transition-all" title="列印或匯出為 PDF">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+                <button onclick="triggerReset()" class="p-2 bg-white hover:bg-red-50 border border-red-200 text-red-500 rounded-xl transition-all" title="恢復預設範本">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 匯入設定彈窗 (Modal) -->
+    <div id="importModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-100 transform transition-all scale-95 opacity-0 duration-300" id="importModalBody">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-rose-500"></i> 匯入約定書資料
+                </h3>
+                <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                您可以直接選擇從伴侶那裡收到的約定書 JSON 備份檔案，或者在下方框中直接貼上約定書的設定代碼。
+            </p>
+
+            <!-- 檔案上傳 -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇備份檔案 (.json)</label>
+                <input type="file" id="importFile" accept=".json" onchange="handleFileSelect(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer border border-dashed border-rose-200 rounded-xl p-2 bg-rose-50/10">
+            </div>
+
+            <div class="relative flex py-2 items-center">
+                <div class="flex-grow border-t border-slate-200"></div>
+                <span class="flex-shrink mx-4 text-xs text-slate-400">或直接貼上代碼</span>
+                <div class="flex-grow border-t border-slate-200"></div>
+            </div>
+
+            <!-- 文字輸入 -->
+            <div class="mb-4 mt-2">
+                <textarea id="importText" rows="4" placeholder='請在此貼上代碼 {"title": "遠距期間相互約定書", ...}' class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-rose-400 font-mono"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="closeImportModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                    取消
+                </button>
+                <button onclick="submitImportText()" class="px-4 py-2 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl text-xs font-bold shadow-md hover:from-rose-500 hover:to-pink-600 transition-all">
+                    確認匯入
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 mt-6">
+        
+        <!-- 狀態提醒 Toast -->
+        <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+            <span id="toastIcon" class="text-rose-400"><i class="fa-solid fa-circle-info"></i></span>
+            <span id="toastMessage" class="text-sm font-medium"></span>
+        </div>
+
+        <!-- 約定書卡片本體 -->
+        <div class="print-card bg-white rounded-3xl shadow-xl border border-rose-100 p-6 md:p-12 relative overflow-hidden">
+            <!-- 浪漫裝飾背景圖案 -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-100/50 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-rose-100/50 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="text-center pb-6 border-b border-rose-100">
+                <span class="inline-block px-4 py-1.5 bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold tracking-wider rounded-full mb-4">
+                    🌸 OUR PROMISE & AGREEMENT
+                </span>
+                <h1 id="docTitle" contenteditable="false" class="romantic-title text-3xl md:text-4xl font-extrabold text-slate-800 tracking-wide mb-4">
+                    遠距期間相互約定書
+                </h1>
+                
+                <!-- 日期資訊 -->
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-sm text-slate-600 mt-2">
+                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <span class="font-bold text-slate-500">生效日期：</span>
+                        <span id="docEffectiveDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">2026 年 _____ 月 _____ 日</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <span class="font-bold text-slate-500">預計同住日期：</span>
+                        <span id="docCohabDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">最晚 2026 年春節後</span>
+                    </div>
+                </div>
+
+                <p id="docSub" contenteditable="false" class="text-slate-500 text-xs mt-4 italic">
+                    基本原則彈性條款（視情況調整）安全感相關
+                </p>
+
+                <!-- 顏色指標對照欄 -->
+                <div class="flex flex-wrap justify-center items-center gap-4 mt-6 pt-4 border-t border-dashed border-rose-100 text-xs">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 font-medium border border-purple-100">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> 基本原則
+                    </div>
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-100">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> 彈性條款 (視情況調整)
+                    </div>
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-100">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 安全感相關
+                    </div>
+                </div>
+            </div>
+
+            <div id="sectionsContainer" class="py-8 space-y-8">
+                <!-- 條款內容將由 JavaScript 動態渲染 -->
+            </div>
+
+            <div class="pt-6 border-t border-rose-100">
+                <p id="docNote" contenteditable="false" class="bg-rose-50/70 border border-rose-100 rounded-2xl p-4 text-slate-600 text-sm leading-relaxed mb-8">
+                    📌 本約定書為雙方自願訂立，目的在增進安全感與信任，而非相互監控。所有條款得隨實際情況由雙方共同修訂。
+                </p>
+
+                <!-- 簽名欄標題 -->
+                <div class="text-center mb-6">
+                    <span class="romantic-title text-xl font-bold text-slate-700 block">🌸 攜手簽署安全感 🌸</span>
+                    <span class="text-xs text-slate-400 block mt-1">請切換至「唯讀與確認模式」後於下方進行手寫簽章</span>
+                </div>
+
+                <!-- 雙人手寫簽名區 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 甲方簽署 -->
+                    <div class="signature-box border border-dashed border-rose-200 rounded-2xl p-4 bg-rose-50/20 flex flex-col items-center">
+                        <div class="w-full flex justify-between items-center mb-2">
+                            <span id="sigTitleA" contenteditable="false" class="text-sm font-bold text-rose-600">甲方（愛你的一方）</span>
+                            <button onclick="clearSignature('canvasA')" class="no-print text-xs text-slate-400 hover:text-red-500 transition-colors">
+                                <i class="fa-solid fa-eraser"></i> 清除
+                            </button>
+                        </div>
+                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-100 shadow-inner overflow-hidden">
+                            <canvas id="canvasA" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
+                        </div>
+                        <div class="w-full mt-3 flex items-center justify-between">
+                            <input id="sigNameA" type="text" placeholder="輸入印刷體姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-400 w-1/2">
+                            <span id="sigDateA" class="text-[10px] text-slate-400">簽署日: 未簽名</span>
+                        </div>
+                    </div>
+
+                    <!-- 乙方簽署 -->
+                    <div class="signature-box border border-dashed border-rose-200 rounded-2xl p-4 bg-rose-50/20 flex flex-col items-center">
+                        <div class="w-full flex justify-between items-center mb-2">
+                            <span id="sigTitleB" contenteditable="false" class="text-sm font-bold text-rose-600">乙方（在乎你的一方）</span>
+                            <button onclick="clearSignature('canvasB')" class="no-print text-xs text-slate-400 hover:text-red-500 transition-colors">
+                                <i class="fa-solid fa-eraser"></i> 清除
+                            </button>
+                        </div>
+                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-100 shadow-inner overflow-hidden">
+                            <canvas id="canvasB" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
+                        </div>
+                        <div class="w-full mt-3 flex items-center justify-between">
+                            <input id="sigNameB" type="text" placeholder="輸入印刷體姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-400 w-1/2">
+                            <span id="sigDateB" class="text-[10px] text-slate-400">簽署日: 未簽名</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 滿分幸福大禮包 -->
+                <div id="completedMessage" class="hidden mt-8 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center text-emerald-800 animate-bounce">
+                    <span class="text-xl">🎉 💖 恭喜！雙方已達成 100% 共識並簽署承諾！ 💖 🎉</span>
+                    <p class="text-xs text-emerald-600 mt-1">遠距離無法阻擋心貼心的距離，祝兩位甜蜜長久！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 系統狀態
+        let currentMode = 'check'; // 'check' 或 'edit'
+        let agreementData = null;
+
+        // 拖曳狀態追蹤
+        let dragSrcSectionIdx = null;
+        let dragSrcRuleIdx = null;
+
+        // 預設條款範本與顏色分類配對
+        const defaultTemplate = {
+            title: "遠距期間相互約定書",
+            effectiveDate: "2026 年 _____ 月 _____ 日",
+            cohabDate: "最晚 2026 年春節後",
+            sub: "基本原則彈性條款（視情況調整）安全感相關",
+            note: "📌 本約定書為夫妻雙方自願訂立，目的在增進安全感與信任，而非相互監控。所有條款得隨實際情況由雙方共同修訂。",
+            sigTitleA: "簽署人（甲方）",
+            sigTitleB: "簽署人（乙方）",
+            sections: [
+                {
+                    id: "sec1",
+                    title: "第一條　日常聯繫",
+                    rules: [
+                        { id: "1.1", text: "雙方每日應有至少一次主動聯繫，形式不限（語音、訊息均可），時間以雙方當日作息共同決定，並得提前告知對方當日預計的忙碌程度。", checked: false, category: "basic" },
+                        { id: "1.2", text: "若當日確實無法聯繫，應事先告知，並於隔日主動補上說明。不得無故超過 24 小時未讀未回，遇特殊情況以電話確認對方狀況。", checked: false, category: "security" },
+                        { id: "1.3", text: "每週安排至少一次視訊，時間以雙方共同確認為主，聊天內容不限於事務，包含近況、心情與想法。", checked: false, category: "flexible" }
+                    ]
+                },
+                {
+                    id: "sec2",
+                    title: "第二條　飲食分享",
+                    rules: [
+                        { id: "2.1", text: "鼓勵（非強制）雙方在用餐時隨手分享當餐內容（照片或文字均可），讓彼此保有日常生活的參與感。", checked: false, category: "flexible" }
+                    ]
+                },
+                {
+                    id: "sec3",
+                    title: "第三條　聚餐與社交活動",
+                    rules: [
+                        { id: "3.1", text: "若預先得知有聚餐或社交場合，應提前告知對方，包含大致人員組成與預計時間，讓對方不至於聯繫不到時感到擔心。", checked: false, category: "security" },
+                        { id: "3.2", text: "關於因家業需要的應酬或鄰里往來，雙方理解此為工作的一部分，不以此條款限制。惟希望事後告知大致情形，維持透明度。", checked: false, category: "flexible" },
+                        { id: "3.3", text: "若臨時發生未預期的聚餐，應於可行時盡快通知，無須等到散場，一則簡訊或短訊息即可。", checked: false, category: "security" }
+                    ]
+                },
+                {
+                    id: "sec4",
+                    title: "第四條　飲酒",
+                    rules: [
+                        { id: "4.1", text: "理解對方不喜歡在外獨自或不明情況下飲酒，因此若飲酒場合為個人選擇（非應酬必要），應事先溝通並取得共識。", checked: false, category: "security" },
+                        { id: "4.2", text: "因應酬或業務需要而飲酒，應量力而為、不過量，結束後以訊息告知對方已平安返家。", checked: false, category: "flexible" }
+                    ]
+                },
+                {
+                    id: "sec5",
+                    title: "第五條　與異性的互動",
+                    rules: [
+                        { id: "5.1", text: "雙方應尊重彼此對與異性保持適當距離的期待，避免不必要的單獨長時間相處，若有工作上的必要情況，主動告知對方。", checked: false, category: "security" },
+                        { id: "5.2", text: "以主動透明取代事後解釋：若有對方可能介意的社交情形，寧可先說，不讓對方自行猜測或想像。", checked: false, category: "security" }
+                    ]
+                },
+                {
+                    id: "sec6",
+                    title: "第六條　衝突處理",
+                    rules: [
+                        { id: "6.1", text: "爭執發生時，不以冷戰代替溝通，冷靜期不超過 24 小時，之後應主動以語音或視訊溝通，避免純文字誤解。", checked: false, category: "basic" },
+                        { id: "6.2", text: "若一方提出需要情緒空間，另一方應尊重，但需說明大約需要多久，不讓對方在不知情下等待。", checked: false, category: "flexible" }
+                    ]
+                },
+                {
+                    id: "sec7",
+                    title: "第七條　見面計畫",
+                    rules: [
+                        { id: "7.1", text: "雙方應提前確認下一次見面的時間，原則上不讓間隔超過 _____ 週，見面費用與交通方式由雙方共同商量決定。", checked: false, category: "basic" }
+                    ]
+                },
+                {
+                    id: "sec8",
+                    title: "第八條　未來規劃",
+                    rules: [
+                        { id: "8.1", text: "每月至少一次討論同住時間表的進展，確認最快（10月初）或最慢（隔年春節後）同住計畫是否有變動，雙方共同決策，不單方面更動。", checked: false, category: "basic" }
+                    ]
+                }
+            ]
+        };
+
+        // 頁面載入時初始化
+        window.onload = function() {
+            loadAgreementData();
+            initCanvases();
+            setMode('check'); // 預設進來是確認/唯讀模式
+            checkSuccess();
+        };
+
+        // 從 LocalStorage 載入資料
+        function loadAgreementData() {
+            const savedData = localStorage.getItem('ldr_agreement_data');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    // 檢查解析出來的資料是否包含合約主結構，若沒有則套用預設範本
+                    if (parsed && parsed.sections && parsed.sections.length > 0) {
+                        agreementData = parsed;
+                        // 升級舊資料：確保每個規則都有 category 欄位
+                        agreementData.sections.forEach(sec => {
+                            if (!sec.rules) sec.rules = [];
+                            sec.rules.forEach(rule => {
+                                if (!rule.category) rule.category = "basic";
+                            });
+                        });
+                    } else {
+                        agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+                    }
+                } catch(e) {
+                    agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+                }
+            } else {
+                agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+            }
+            renderAgreement();
+        }
+
+        // 儲存資料到 LocalStorage
+        function saveAgreementData() {
+            if (!agreementData) return;
+            agreementData.title = document.getElementById('docTitle').innerText.trim();
+            agreementData.effectiveDate = document.getElementById('docEffectiveDate').innerText.trim();
+            agreementData.cohabDate = document.getElementById('docCohabDate').innerText.trim();
+            agreementData.sub = document.getElementById('docSub').innerText.trim();
+            agreementData.note = document.getElementById('docNote').innerText.trim();
+            agreementData.sigTitleA = document.getElementById('sigTitleA').innerText.trim();
+            agreementData.sigTitleB = document.getElementById('sigTitleB').innerText.trim();
+
+            localStorage.setItem('ldr_agreement_data', JSON.stringify(agreementData));
+            updateProgress();
+        }
+
+        // 智慧型自動重編條款 ID（如 1.1, 1.2），非標準格式則予以保留
+        function autoReindexRuleIds() {
+            agreementData.sections.forEach((sec, sIdx) => {
+                sec.rules.forEach((rule, rIdx) => {
+                    const targetId = `${sIdx + 1}.${rIdx + 1}`;
+                    if (!rule.id || /^\d+\.\d+$/.test(rule.id)) {
+                        rule.id = targetId;
+                    }
+                });
+            });
+        }
+
+        // 手動儲存按鈕動作
+        function triggerManualSave() {
+            saveAgreementData();
+            
+            // 變更按鈕外觀反饋
+            const btn = document.getElementById('btnManualSave');
+            const icon = document.getElementById('saveBtnIcon');
+            const text = document.getElementById('saveBtnText');
+
+            btn.className = "px-3.5 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5 scale-95";
+            icon.className = "fa-solid fa-circle-check text-white";
+            text.innerText = "已儲存修改！";
+
+            showToast("整份合約與排序設定已成功儲存！", "success");
+
+            setTimeout(() => {
+                btn.className = "px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5";
+                icon.className = "fa-regular fa-floppy-disk";
+                text.innerText = "儲存修改";
+            }, 1500);
+        }
+
+        // 匯出約定書設定檔
+        function triggerExport() {
+            // 先確保取得最新修改
+            saveAgreementData();
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(agreementData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `${agreementData.title || "遠距離情侶約定書"}_備份.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            // 同時複製一組 JSON text 到用戶剪貼簿，方便不支援下載的瀏覽器使用
+            const jsonText = JSON.stringify(agreementData);
+            const el = document.createElement('textarea');
+            el.value = jsonText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("約定書 JSON 檔案已下載！同步設定代碼也已複製至您的剪貼簿，可直接傳給伴侶貼上！", "success");
+        }
+
+        // 打開匯入 Modal
+        function openImportModal() {
+            const modal = document.getElementById('importModal');
+            const body = document.getElementById('importModalBody');
+            document.getElementById('importText').value = "";
+            document.getElementById('importFile').value = "";
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                body.classList.remove('scale-95', 'opacity-0');
+            }, 50);
+        }
+
+        // 關閉匯入 Modal
+        function closeImportModal() {
+            const modal = document.getElementById('importModal');
+            const body = document.getElementById('importModalBody');
+            body.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // 處理匯入檔案選擇
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    applyImportedData(parsedData);
+                } catch (err) {
+                    showToast("檔案讀取失敗！請確保它是正確的備份 .json 格式檔。", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 處理手動貼上代碼匯入
+        function submitImportText() {
+            const txt = document.getElementById('importText').value.trim();
+            if (!txt) {
+                showToast("請貼上代碼或選擇 JSON 備份檔！", "info");
+                return;
+            }
+
+            try {
+                const parsedData = JSON.parse(txt);
+                applyImportedData(parsedData);
+            } catch (err) {
+                showToast("代碼解析失敗！請確保貼上的是完整的備份代碼。", "info");
+            }
+        }
+
+        // 套用並刷新匯入的資料
+        function applyImportedData(data) {
+            if (!data || !data.sections) {
+                showToast("匯入的資料格式不符，缺少主要約定章節！", "info");
+                return;
+            }
+
+            // 安全升級與欄位檢查
+            if (!data.title) data.title = "遠距期間相互約定書";
+            data.sections.forEach(sec => {
+                if (!sec.rules) sec.rules = [];
+                sec.rules.forEach(rule => {
+                    if (!rule.category) rule.category = "basic";
+                    if (rule.checked === undefined) rule.checked = false;
+                });
+            });
+
+            // 存入全域與本機儲存空間
+            agreementData = data;
+            localStorage.setItem('ldr_agreement_data', JSON.stringify(agreementData));
+            
+            // 重新渲染畫面
+            renderAgreement();
+            closeImportModal();
+            checkSuccess();
+            showToast("約定書內容已成功同步匯入！", "success");
+        }
+
+        // 取得分類對應的視覺屬性
+        function getCategoryStyle(category) {
+            switch(category) {
+                case 'basic':
+                    return {
+                        label: '基本原則',
+                        badgeClass: 'bg-purple-100 text-purple-700 border-purple-200',
+                        numClass: 'bg-purple-100 text-purple-700 border-purple-300', 
+                        leftBorderClass: 'border-l-[5px] border-l-purple-400', 
+                        checkedBgClass: 'category-basic-bg border-purple-200',
+                        bulletBg: 'bg-purple-500',
+                        icon: 'fa-star'
+                    };
+                case 'flexible':
+                    return {
+                        label: '彈性條款',
+                        badgeClass: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                        numClass: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+                        leftBorderClass: 'border-l-[5px] border-l-emerald-400',
+                        checkedBgClass: 'category-flexible-bg border-emerald-200',
+                        bulletBg: 'bg-emerald-500',
+                        icon: 'fa-sliders'
+                    };
+                case 'security':
+                    return {
+                        label: '安全感相關',
+                        badgeClass: 'bg-rose-100 text-rose-700 border-rose-200',
+                        numClass: 'bg-rose-100 text-rose-700 border-rose-300',
+                        leftBorderClass: 'border-l-[5px] border-l-rose-400',
+                        checkedBgClass: 'category-security-bg border-rose-200',
+                        bulletBg: 'bg-rose-500',
+                        icon: 'fa-heart'
+                    };
+                default:
+                    return {
+                        label: '基本原則',
+                        badgeClass: 'bg-purple-100 text-purple-700 border-purple-200',
+                        numClass: 'bg-purple-100 text-purple-700 border-purple-300',
+                        leftBorderClass: 'border-l-[5px] border-l-purple-400',
+                        checkedBgClass: 'category-basic-bg border-purple-200',
+                        bulletBg: 'bg-purple-500',
+                        icon: 'fa-star'
+                    };
+            }
+        }
+
+        function renderAgreement() {
+            if (!agreementData) return;
+            
+            // 寫入固定文字欄位
+            document.getElementById('docTitle').innerText = agreementData.title || "";
+            document.getElementById('docEffectiveDate').innerText = agreementData.effectiveDate || "";
+            document.getElementById('docCohabDate').innerText = agreementData.cohabDate || "";
+            document.getElementById('docSub').innerText = agreementData.sub || "";
+            document.getElementById('docNote').innerText = agreementData.note || "";
+            document.getElementById('sigTitleA').innerText = agreementData.sigTitleA || "簽署人（甲方）";
+            document.getElementById('sigTitleB').innerText = agreementData.sigTitleB || "簽署人（乙方）";
+            
+            // 姓名輸入框
+            document.getElementById('sigNameA').value = agreementData.sigNameA || "";
+            document.getElementById('sigNameB').value = agreementData.sigNameB || "";
+            document.getElementById('sigDateA').innerText = agreementData.sigDateA ? `簽署日: ${agreementData.sigDateA}` : "簽署日: 未簽署";
+            document.getElementById('sigDateB').innerText = agreementData.sigDateB ? `簽署日: ${agreementData.sigDateB}` : "簽署日: 未簽署";
+
+            const container = document.getElementById('sectionsContainer');
+            container.innerHTML = '';
+
+            agreementData.sections.forEach((section, sIndex) => {
+                const secEl = document.createElement('div');
+                secEl.className = "section-card border-l-4 border-rose-300 pl-4 md:pl-6 py-1 transition-all";
+                
+                // 標題列
+                const headerEl = document.createElement('div');
+                headerEl.className = "flex items-center justify-between mb-4 group";
+                
+                const titleEl = document.createElement('h3');
+                titleEl.className = "font-bold text-lg text-slate-800 tracking-wide";
+                titleEl.innerText = section.title;
+                titleEl.contentEditable = (currentMode === 'edit');
+                titleEl.onblur = function() {
+                    section.title = this.innerText.trim();
+                    saveAgreementData();
+                };
+                headerEl.appendChild(titleEl);
+
+                // 編輯模式下顯示「刪除此章節」、「新增條款」與「大章節排序控制」
+                if (currentMode === 'edit') {
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = "flex gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity no-print items-center";
+                    
+                    // 大章節上移
+                    const moveUpBtn = document.createElement('button');
+                    moveUpBtn.className = `p-1 text-xs rounded hover:bg-rose-100 text-rose-500 ${sIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`;
+                    moveUpBtn.title = "章節上移";
+                    moveUpBtn.innerHTML = "<i class='fa-solid fa-chevron-up'></i>";
+                    moveUpBtn.onclick = () => moveSection(sIndex, -1);
+                    actionsDiv.appendChild(moveUpBtn);
+
+                    // 大章節下移
+                    const moveDownBtn = document.createElement('button');
+                    moveDownBtn.className = `p-1 text-xs rounded hover:bg-rose-100 text-rose-500 ${sIndex === agreementData.sections.length - 1 ? 'opacity-30 pointer-events-none' : ''}`;
+                    moveDownBtn.title = "章節下移";
+                    moveDownBtn.innerHTML = "<i class='fa-solid fa-chevron-down'></i>";
+                    moveDownBtn.onclick = () => moveSection(sIndex, 1);
+                    actionsDiv.appendChild(moveDownBtn);
+
+                    // 新增條例
+                    const addBtn = document.createElement('button');
+                    addBtn.className = "text-xs px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-md flex items-center gap-1 font-semibold ml-2";
+                    addBtn.innerHTML = "<i class='fa-solid fa-plus'></i> 條款";
+                    addBtn.onclick = () => addRule(sIndex);
+                    actionsDiv.appendChild(addBtn);
+                    
+                    // 刪除大章節
+                    const delSecBtn = document.createElement('button');
+                    delSecBtn.className = "text-xs px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-md flex items-center gap-1 ml-1";
+                    delSecBtn.innerHTML = "<i class='fa-regular fa-trash-can'></i> 刪除章節";
+                    delSecBtn.onclick = () => deleteSection(sIndex);
+                    actionsDiv.appendChild(delSecBtn);
+
+                    headerEl.appendChild(actionsDiv);
+                }
+
+                secEl.appendChild(headerEl);
+
+                // 條款清單
+                const listEl = document.createElement('div');
+                listEl.className = "space-y-4 min-h-[40px]"; 
+
+                // 設定跨區拖曳 Drop 目標
+                if (currentMode === 'edit') {
+                    listEl.ondragover = (e) => e.preventDefault();
+                    listEl.ondrop = (e) => {
+                        e.preventDefault();
+                        if (dragSrcSectionIdx !== null && dragSrcRuleIdx !== null) {
+                            const rule = agreementData.sections[dragSrcSectionIdx].rules.splice(dragSrcRuleIdx, 1)[0];
+                            agreementData.sections[sIndex].rules.push(rule);
+                            autoReindexRuleIds();
+                            saveAgreementData();
+                            renderAgreement();
+                            showToast("條款移動完成！", "success");
+                            resetDragState();
+                        }
+                    };
+                }
+
+                section.rules.forEach((rule, rIndex) => {
+                    const styleMeta = getCategoryStyle(rule.category);
+                    const ruleEl = document.createElement('div');
+                    
+                    // 動態加入顏色主題左側邊條與背景
+                    ruleEl.className = `clause-item flex flex-col md:flex-row md:items-start gap-3 p-4 rounded-2xl transition-all border border-y border-r border-slate-100 hover:border-slate-200 ${styleMeta.leftBorderClass} ${rule.checked ? styleMeta.checkedBgClass + ' shadow-sm' : 'bg-white'}`;
+                    
+                    // 電腦版拖曳事件綁定
+                    if (currentMode === 'edit') {
+                        ruleEl.setAttribute('draggable', 'true');
+                        ruleEl.addEventListener('dragstart', (e) => {
+                            dragSrcSectionIdx = sIndex;
+                            dragSrcRuleIdx = rIndex;
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/html', ruleEl.outerHTML);
+                            ruleEl.classList.add('dragging');
+                        });
+                        ruleEl.addEventListener('dragend', () => {
+                            ruleEl.classList.remove('dragging');
+                            resetDragState();
+                        });
+                        ruleEl.addEventListener('dragover', (e) => {
+                            e.preventDefault();
+                        });
+                        ruleEl.addEventListener('drop', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            if (dragSrcSectionIdx !== null && dragSrcRuleIdx !== null) {
+                                if (dragSrcSectionIdx === sIndex && dragSrcRuleIdx === rIndex) return;
+
+                                const movedRule = agreementData.sections[dragSrcSectionIdx].rules.splice(dragSrcRuleIdx, 1)[0];
+                                agreementData.sections[sIndex].rules.splice(rIndex, 0, movedRule);
+                                
+                                autoReindexRuleIds();
+                                saveAgreementData();
+                                renderAgreement();
+                                showToast("順序重組成功！", "success");
+                                resetDragState();
+                            }
+                        });
+                    }
+
+                    // 點選整列可切換核取（僅在 Check Mode 有效）
+                    if (currentMode === 'check') {
+                        ruleEl.onclick = function(e) {
+                            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT' && e.target.tagName !== 'OPTION') {
+                                toggleCheck(sIndex, rIndex);
+                            }
+                        };
+                        ruleEl.classList.add('cursor-pointer');
+                    }
+
+                    // 主要內容容器（左邊 Checkbox、序號、拖曳手把）
+                    const leftCol = document.createElement('div');
+                    leftCol.className = "flex items-center gap-3.5 flex-shrink-0";
+
+                    // 拖曳手把 (僅在編輯模式下顯示)
+                    if (currentMode === 'edit') {
+                        const dragHandle = document.createElement('span');
+                        dragHandle.className = "cursor-grab active:cursor-grabbing text-slate-300 hover:text-rose-400 p-1 transition-colors no-print";
+                        dragHandle.innerHTML = "<i class='fa-solid fa-grip-vertical text-sm'></i>";
+                        dragHandle.title = "拖按此處可任意上下移動此約定";
+                        leftCol.appendChild(dragHandle);
+                    }
+
+                    // 核取方塊
+                    if (currentMode === 'check') {
+                        const checkContainer = document.createElement('div');
+                        checkContainer.className = "pt-0.5 flex-shrink-0";
+                        const checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.checked = rule.checked;
+                        checkbox.className = "w-5 h-5 rounded text-rose-500 focus:ring-rose-400 cursor-pointer accent-rose-500";
+                        checkbox.onchange = () => toggleCheck(sIndex, rIndex);
+                        checkContainer.appendChild(checkbox);
+                        leftCol.appendChild(checkContainer);
+                    }
+
+                    // 標題數字：使用對應分類的主題配色
+                    const numBadge = document.createElement('span');
+                    numBadge.className = `text-xs font-bold px-2 py-0.5 rounded border shadow-sm transition-colors ${styleMeta.numClass}`;
+                    numBadge.innerText = rule.id || `${sIndex+1}.${rIndex+1}`;
+                    leftCol.appendChild(numBadge);
+
+                    // 僅在「自由編輯模式」下才顯示「分類文字標籤」，確保唯讀時畫面完全乾淨
+                    if (currentMode === 'edit') {
+                        const badge = document.createElement('span');
+                        badge.className = `text-[10px] font-bold px-2.5 py-0.5 rounded-full border flex items-center gap-1 flex-shrink-0 ${styleMeta.badgeClass}`;
+                        badge.innerHTML = `<i class="fa-solid ${styleMeta.icon} text-[9px]"></i> ${styleMeta.label}`;
+                        leftCol.appendChild(badge);
+                    }
+
+                    ruleEl.appendChild(leftCol);
+
+                    // 條款主內容
+                    const textEl = document.createElement('p');
+                    textEl.className = `text-sm leading-relaxed text-slate-700 flex-1 ${rule.checked ? 'text-slate-600 font-medium' : ''}`;
+                    textEl.innerText = rule.text;
+                    textEl.contentEditable = (currentMode === 'edit');
+                    textEl.onblur = function() {
+                        rule.text = this.innerText.trim();
+                        saveAgreementData();
+                    };
+                    
+                    // 點擊 _____ 下底線時自動聚焦選取（編輯模式輔助）
+                    if (currentMode === 'edit') {
+                        textEl.onfocus = function() {
+                            setTimeout(() => {
+                                const range = document.createRange();
+                                const selection = window.getSelection();
+                                const text = textEl.innerText;
+                                const index = text.indexOf('_____');
+                                if (index !== -1 && textEl.firstChild) {
+                                    range.setStart(textEl.firstChild, index);
+                                    range.setEnd(textEl.firstChild, index + 5);
+                                    selection.removeAllRanges();
+                                    selection.addRange(range);
+                                }
+                            }, 50);
+                        };
+                    }
+                    
+                    ruleEl.appendChild(textEl);
+
+                    // 編輯模式下的控制群組（分類選單、排序按鈕、刪除按鈕）
+                    if (currentMode === 'edit') {
+                        const editDiv = document.createElement('div');
+                        editDiv.className = "flex gap-1.5 flex-shrink-0 items-center justify-end mt-2 md:mt-0 no-print";
+
+                        // 分類選擇下拉選單
+                        const catSelect = document.createElement('select');
+                        catSelect.className = "text-xs border border-slate-200 rounded px-1.5 py-1 bg-white text-slate-600 focus:outline-none focus:border-rose-300";
+                        
+                        const categories = [
+                            { value: 'basic', label: '💜 基本原則' },
+                            { value: 'flexible', label: '💚 彈性條款' },
+                            { value: 'security', label: '💗 安全感相關' }
+                        ];
+
+                        categories.forEach(cat => {
+                            const opt = document.createElement('option');
+                            opt.value = cat.value;
+                            opt.innerText = cat.label;
+                            if (rule.category === cat.value) {
+                                opt.selected = true;
+                            }
+                            catSelect.appendChild(opt);
+                        });
+
+                        catSelect.onchange = function() {
+                            rule.category = this.value;
+                            saveAgreementData();
+                            renderAgreement();
+                            showToast(`已變更分類為：${this.options[this.selectedIndex].text}`, "success");
+                        };
+                        editDiv.appendChild(catSelect);
+
+                        // 移動微調按鈕組 (手機版救星)
+                        const itemOrderDiv = document.createElement('div');
+                        itemOrderDiv.className = "flex border border-slate-200 rounded overflow-hidden bg-white text-slate-500";
+                        
+                        // 往上移動
+                        const upBtn = document.createElement('button');
+                        upBtn.className = `p-1 px-1.5 text-[10px] hover:bg-slate-100 ${rIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`;
+                        upBtn.title = "向上移";
+                        upBtn.innerHTML = "<i class='fa-solid fa-arrow-up'></i>";
+                        upBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            moveRule(sIndex, rIndex, -1);
+                        };
+                        itemOrderDiv.appendChild(upBtn);
+
+                        // 往下移動
+                        const downBtn = document.createElement('button');
+                        downBtn.className = `p-1 px-1.5 text-[10px] hover:bg-slate-100 ${rIndex === section.rules.length - 1 ? 'opacity-30 pointer-events-none' : ''}`;
+                        downBtn.title = "向下移";
+                        downBtn.innerHTML = "<i class='fa-solid fa-arrow-down'></i>";
+                        downBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            moveRule(sIndex, rIndex, 1);
+                        };
+                        itemOrderDiv.appendChild(downBtn);
+
+                        editDiv.appendChild(itemOrderDiv);
+
+                        // 編號修改 input
+                        const idInput = document.createElement('input');
+                        idInput.type = "text";
+                        idInput.value = rule.id || `${sIndex+1}.${rIndex+1}`;
+                        idInput.className = "w-10 text-center text-xs border border-slate-200 rounded py-1 text-slate-500 focus:outline-none focus:border-rose-300";
+                        idInput.onchange = function() {
+                            rule.id = this.value.trim();
+                            saveAgreementData();
+                        };
+                        editDiv.appendChild(idInput);
+
+                        // 刪除按鈕
+                        const delBtn = document.createElement('button');
+                        delBtn.className = "text-red-400 hover:text-red-600 p-1.5 transition-colors";
+                        delBtn.innerHTML = "<i class='fa-regular fa-trash-can'></i>";
+                        delBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            deleteRule(sIndex, rIndex);
+                        };
+                        editDiv.appendChild(delBtn);
+
+                        ruleEl.appendChild(editDiv);
+                    }
+
+                    listEl.appendChild(ruleEl);
+                });
+
+                secEl.appendChild(listEl);
+                container.appendChild(secEl);
+            });
+
+            // 編輯模式最底下的「新增大章節」按鈕
+            if (currentMode === 'edit') {
+                const addSecContainer = document.createElement('div');
+                addSecContainer.className = "text-center pt-4 no-print";
+                const addSecBtn = document.createElement('button');
+                addSecBtn.className = "px-4 py-2 bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white rounded-xl text-sm font-bold shadow-md transition-all flex items-center gap-2 mx-auto";
+                addSecBtn.innerHTML = "<i class='fa-solid fa-folder-plus'></i> 新增條款大章節";
+                addSecBtn.onclick = addSection;
+                addSecContainer.appendChild(addSecBtn);
+                container.appendChild(addSecContainer);
+            }
+
+            updateProgress();
+        }
+
+        // 大章節排序邏輯
+        function moveSection(sIndex, direction) {
+            const sections = agreementData.sections;
+            const targetIndex = sIndex + direction;
+            if (targetIndex < 0 || targetIndex >= sections.length) return;
+
+            const temp = sections[sIndex];
+            sections[sIndex] = sections[targetIndex];
+            sections[targetIndex] = temp;
+
+            autoReindexRuleIds();
+            saveAgreementData();
+            renderAgreement();
+            showToast("大章節順序調整成功！", "success");
+        }
+
+        // 單條款排序邏輯
+        function moveRule(sIndex, rIndex, direction) {
+            const rules = agreementData.sections[sIndex].rules;
+            const targetIndex = rIndex + direction;
+            if (targetIndex < 0 || targetIndex >= rules.length) return;
+
+            const temp = rules[rIndex];
+            rules[rIndex] = rules[targetIndex];
+            rules[targetIndex] = temp;
+
+            autoReindexRuleIds();
+            saveAgreementData();
+            renderAgreement();
+            showToast("條款順序調整成功！", "success");
+        }
+
+        function resetDragState() {
+            dragSrcSectionIdx = null;
+            dragSrcRuleIdx = null;
+        }
+
+        function toggleCheck(sIndex, rIndex) {
+            agreementData.sections[sIndex].rules[rIndex].checked = !agreementData.sections[sIndex].rules[rIndex].checked;
+            saveAgreementData();
+            renderAgreement();
+            checkSuccess();
+        }
+
+        function addRule(sIndex) {
+            const rules = agreementData.sections[sIndex].rules;
+            const newId = `${sIndex + 1}.${rules.length + 1}`;
+            rules.push({
+                id: newId,
+                text: "點此編輯新約定條款內容...",
+                checked: false,
+                category: "basic" 
+            });
+            saveAgreementData();
+            renderAgreement();
+            showToast("已成功新增條款項目！", "success");
+        }
+
+        function deleteRule(sIndex, rIndex) {
+            agreementData.sections[sIndex].rules.splice(rIndex, 1);
+            autoReindexRuleIds();
+            saveAgreementData();
+            renderAgreement();
+            showToast("條款已刪除", "info");
+        }
+
+        function addSection() {
+            const newSecNum = agreementData.sections.length + 1;
+            const chineseNums = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
+            const secName = chineseNums[newSecNum] || `${newSecNum}`;
+            
+            agreementData.sections.push({
+                id: `sec${Date.now()}`,
+                title: `第${secName}條　新約定事項`,
+                rules: [
+                    { id: `${newSecNum}.1`, text: "點此修改新章節的約定細則一...", checked: false, category: "basic" }
+                ]
+            });
+            saveAgreementData();
+            renderAgreement();
+            showToast("已成功新增章節！", "success");
+        }
+
+        function deleteSection(sIndex) {
+            if (confirm("確定要刪除整個大章節（包含底下所有條款）嗎？")) {
+                agreementData.sections.splice(sIndex, 1);
+                autoReindexRuleIds();
+                saveAgreementData();
+                renderAgreement();
+                showToast("章節已刪除", "info");
+            }
+        }
+
+        // 重新設定為預設值
+        function triggerReset() {
+            if (confirm("此操作會清除所有手寫簽名與客製化的修改。確定要回復成初始的「遠距期間相互約定書」嗎？")) {
+                agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+                localStorage.removeItem('ldr_agreement_data');
+                localStorage.removeItem('ldr_signature_canvasA');
+                localStorage.removeItem('ldr_signature_canvasB');
+                
+                loadAgreementData();
+                clearSignature('canvasA');
+                clearSignature('canvasB');
+                
+                document.getElementById('sigNameA').value = "";
+                document.getElementById('sigNameB').value = "";
+                document.getElementById('sigDateA').innerText = "簽署日: 未簽署";
+                document.getElementById('sigDateB').innerText = "簽署日: 未簽署";
+
+                showToast("已重置為預設約定書範本", "info");
+                setMode('check');
+            }
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            const editables = ['docTitle', 'docEffectiveDate', 'docCohabDate', 'docSub', 'docNote', 'sigTitleA', 'sigTitleB'];
+            editables.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.contentEditable = (mode === 'edit');
+                    if (mode === 'edit') {
+                        el.classList.add('border-b', 'border-dashed', 'border-rose-300');
+                    } else {
+                        el.classList.remove('border-b', 'border-dashed', 'border-rose-300');
+                    }
+                }
+            });
+
+            const btnCheck = document.getElementById('btnCheckMode');
+            const btnEdit = document.getElementById('btnEditMode');
+            const btnSave = document.getElementById('btnManualSave');
+            
+            if (mode === 'check') {
+                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm";
+                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600";
+                btnSave.classList.add('hidden'); 
+                
+                saveAgreementData();
+                renderAgreement();
+                showToast("切換為：共識簽署模式（打勾與簽署開啟）", "success");
+            } else {
+                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm";
+                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600";
+                btnSave.classList.remove('hidden'); 
+                
+                renderAgreement();
+                showToast("切換為：自由編輯模式（支援長按拖曳與排序箭頭）", "info");
+            }
+        }
+
+        // 計算並更新進度條
+        function updateProgress() {
+            let total = 0;
+            let checkedCount = 0;
+            
+            if (!agreementData || !agreementData.sections) return;
+
+            agreementData.sections.forEach(sec => {
+                sec.rules.forEach(rule => {
+                    total++;
+                    if (rule.checked) {
+                        checkedCount++;
+                    }
+                });
+            });
+
+            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+            
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+            document.getElementById('progressRatio').innerText = `(${checkedCount}/${total})`;
+        }
+
+        const signatureStates = {
+            canvasA: { isDrawing: false, lastX: 0, lastY: 0, hasSigned: false },
+            canvasB: { isDrawing: false, lastX: 0, lastY: 0, hasSigned: false }
+        };
+
+        function initCanvases() {
+            const canvases = ['canvasA', 'canvasB'];
+            canvases.forEach(id => {
+                const canvas = document.getElementById(id);
+                const ctx = canvas.getContext('2d');
+                
+                resizeCanvas(canvas);
+                window.addEventListener('resize', () => resizeCanvas(canvas));
+
+                const savedSig = localStorage.getItem(`ldr_signature_${id}`);
+                if (savedSig) {
+                    const img = new Image();
+                    img.src = savedSig;
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0);
+                        signatureStates[id].hasSigned = true;
+                        checkSuccess();
+                    };
+                }
+
+                canvas.addEventListener('mousedown', (e) => startDrawing(e, id, canvas, ctx));
+                canvas.addEventListener('mousemove', (e) => draw(e, id, canvas, ctx));
+                canvas.addEventListener('mouseup', () => stopDrawing(id));
+                canvas.addEventListener('mouseout', () => stopDrawing(id));
+
+                canvas.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    const mouseEvent = new MouseEvent('mousedown', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    canvas.dispatchEvent(mouseEvent);
+                }, { passive: true });
+
+                canvas.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    const mouseEvent = new MouseEvent('mousemove', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    canvas.dispatchEvent(mouseEvent);
+                }, { passive: true });
+
+                canvas.addEventListener('touchend', () => {
+                    const mouseEvent = new MouseEvent('mouseup', {});
+                    canvas.dispatchEvent(mouseEvent);
+                });
+            });
+
+            const saveName = (e, party) => {
+                agreementData[`sigName${party}`] = e.target.value;
+                agreementData[`sigDate${party}`] = e.target.value ? new Date().toLocaleDateString('zh-TW') : '';
+                document.getElementById(`sigDate${party}`).innerText = agreementData[`sigDate${party}`] ? `簽署日: ${agreementData[`sigDate${party}`]}` : "簽署日: 未簽署";
+                saveAgreementData();
+                checkSuccess();
+            };
+            document.getElementById('sigNameA').addEventListener('input', (e) => saveName(e, 'A'));
+            document.getElementById('sigNameB').addEventListener('input', (e) => saveName(e, 'B'));
+        }
+
+        function resizeCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            let tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            let tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(canvas, 0, 0);
+
+            const rect = canvas.parentNode.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            ctx.drawImage(tempCanvas, 0, 0);
+        }
+
+        function startDrawing(e, key, canvas, ctx) {
+            if (currentMode !== 'check') {
+                showToast("請先切換回「唯讀與確認模式」再進行手寫簽署喔！", "info");
+                return;
+            }
+            const rect = canvas.getBoundingClientRect();
+            signatureStates[key].isDrawing = true;
+            signatureStates[key].lastX = e.clientX - rect.left;
+            signatureStates[key].lastY = e.clientY - rect.top;
+        }
+
+        function draw(e, key, canvas, ctx) {
+            if (!signatureStates[key].isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(signatureStates[key].lastX, signatureStates[key].lastY);
+            ctx.lineTo(x, y);
+            
+            ctx.strokeStyle = '#334155'; 
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            signatureStates[key].lastX = x;
+            signatureStates[key].lastY = y;
+            signatureStates[key].hasSigned = true;
+        }
+
+        function stopDrawing(key) {
+            if (signatureStates[key].isDrawing) {
+                signatureStates[key].isDrawing = false;
+                
+                const canvas = document.getElementById(key);
+                localStorage.setItem(`ldr_signature_${key}`, canvas.toDataURL());
+                
+                const party = key === 'canvasA' ? 'A' : 'B';
+                if (!agreementData[`sigDate${party}`]) {
+                    agreementData[`sigDate${party}`] = new Date().toLocaleDateString('zh-TW');
+                    document.getElementById(`sigDate${party}`).innerText = `簽署日: ${agreementData[`sigDate${party}`]}`;
+                    saveAgreementData();
+                }
+
+                checkSuccess();
+            }
+        }
+
+        function clearSignature(id) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            signatureStates[id].hasSigned = false;
+            localStorage.removeItem(`ldr_signature_${id}`);
+            
+            const party = id === 'canvasA' ? 'A' : 'B';
+            agreementData[`sigDate${party}`] = '';
+            document.getElementById(`sigDate${party}`).innerText = "簽署日: 未簽署";
+            saveAgreementData();
+
+            checkSuccess();
+            showToast("手寫簽名已清除", "info");
+        }
+
+        function checkSuccess() {
+            if (!agreementData || !agreementData.sections) return;
+            let allChecked = true;
+            let count = 0;
+            agreementData.sections.forEach(sec => {
+                sec.rules.forEach(rule => {
+                    count++;
+                    if (!rule.checked) {
+                        allChecked = false;
+                    }
+                });
+            });
+
+            const signedA = signatureStates.canvasA.hasSigned || agreementData.sigNameA;
+            const signedB = signatureStates.canvasB.hasSigned || agreementData.sigNameB;
+
+            const isFullyCompleted = allChecked && count > 0 && signedA && signedB;
+            const msgBox = document.getElementById('completedMessage');
+
+            if (isFullyCompleted) {
+                if (msgBox.classList.contains('hidden')) {
+                    msgBox.classList.remove('hidden');
+                    triggerConfetti();
+                }
+            } else {
+                msgBox.classList.add('hidden');
+            }
+        }
+
+        function triggerConfetti() {
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#a855f7', '#10b981', '#f43f5e'] 
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#a855f7', '#10b981', '#f43f5e']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        function showToast(message, type = "info") {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            msg.innerText = message;
+            if (type === "success") {
+                icon.innerHTML = "<i class='fa-solid fa-circle-check text-emerald-400 text-lg'></i>";
+            } else if (type === "info") {
+                icon.innerHTML = "<i class='fa-solid fa-circle-info text-rose-400 text-lg'></i>";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 4000);
+        }
+
+        function copyToClipboard() {
+            let outputText = `💕 ${agreementData.title} 💕\n`;
+            outputText += `生效日期: ${agreementData.effectiveDate}\n`;
+            outputText += `預計同住日期: ${agreementData.cohabDate}\n\n`;
+
+            agreementData.sections.forEach(sec => {
+                outputText += `【${sec.title}】\n`;
+                sec.rules.forEach(rule => {
+                    const status = rule.checked ? '[已同意] ' : '[未確認] ';
+                    let catLabel = '基本原則';
+                    if (rule.category === 'flexible') catLabel = '彈性條款';
+                    if (rule.category === 'security') catLabel = '安全感相關';
+                    
+                    outputText += `${rule.id || ''} (${catLabel}) ${status}${rule.text}\n`;
+                });
+                outputText += `\n`;
+            });
+
+            outputText += `${agreementData.note}\n\n`;
+            outputText += `甲方簽署人: ${agreementData.sigNameA || '（未簽名）'}  日期: ${agreementData.sigDateA || '（未簽署）'}\n`;
+            outputText += `乙方簽署人: ${agreementData.sigNameB || '（未簽名）'}  日期: ${agreementData.sigDateB || '（未簽署）'}\n`;
+
+            const el = document.createElement('textarea');
+            el.value = outputText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("整份合約與最新顏色分類、勾選進度，已成功複製！", "success");
+        }
+    </script>
+</body>
+</html>
