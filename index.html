@@ -178,7 +178,7 @@
             <!-- 檔案上傳 -->
             <div class="mb-4">
                 <label class="block text-xs font-bold text-slate-500 mb-1.5">選擇備份檔案 (.json)</label>
-                <input type="file" id="importFile" accept=".json" onchange="handleFileSelect(event)" class="block w-full text-xs text-slate-400 file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-500 hover:file:bg-rose-100 cursor-pointer border border-dashed border-rose-200 rounded-xl p-2 bg-rose-50/10">
+                <input type="file" id="importFile" accept=".json" onchange="handleFileSelect(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-500 hover:file:bg-rose-100 cursor-pointer border border-dashed border-rose-200 rounded-xl p-2 bg-rose-50/10">
             </div>
 
             <div class="relative flex py-2 items-center">
@@ -231,11 +231,11 @@
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-xs text-slate-500 mt-2">
                     <div class="flex items-center gap-1.5 bg-slate-50/70 px-3 py-1.5 rounded-lg border border-slate-100">
                         <span class="font-bold text-slate-400">生效日期：</span>
-                        <span id="docEffectiveDate" contenteditable="false" class="font-semibold text-rose-400 min-w-[120px]">2026 年 _____ 月 _____ 日</span>
+                        <span id="docEffectiveDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">2026 年 _____ 月 _____ 日</span>
                     </div>
                     <div class="flex items-center gap-1.5 bg-slate-50/70 px-3 py-1.5 rounded-lg border border-slate-100">
                         <span class="font-bold text-slate-400">預計同住日期：</span>
-                        <span id="docCohabDate" contenteditable="false" class="font-semibold text-rose-400 min-w-[120px]">最晚 2026 年春節後</span>
+                        <span id="docCohabDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">最晚 2026 年春節後</span>
                     </div>
                 </div>
 
@@ -777,15 +777,20 @@
                         leftCol.appendChild(dragHandle);
                     }
 
+                    // 重新設計成符合馬卡龍風格且高對比度、相容性佳的自訂勾選盒 (新修改)
                     if (currentMode === 'check') {
                         const checkContainer = document.createElement('div');
                         checkContainer.className = "pt-0.5 flex-shrink-0";
-                        const checkbox = document.createElement('input');
-                        checkbox.type = "checkbox";
-                        checkbox.checked = rule.checked;
-                        checkbox.className = "w-4 h-4 rounded text-rose-400 focus:ring-rose-300 cursor-pointer accent-rose-400";
-                        checkbox.onchange = () => toggleCheck(sIndex, rIndex);
-                        checkContainer.appendChild(checkbox);
+                        
+                        const customCheckbox = document.createElement('div');
+                        customCheckbox.className = `w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-150 ${
+                            rule.checked 
+                            ? 'bg-rose-400 border-rose-400 text-white shadow-sm' 
+                            : 'bg-white border-slate-300 hover:border-rose-300'
+                        }`;
+                        customCheckbox.innerHTML = rule.checked ? "<i class='fa-solid fa-check text-[10px]'></i>" : "";
+                        
+                        checkContainer.appendChild(customCheckbox);
                         leftCol.appendChild(checkContainer);
                     }
 
@@ -803,8 +808,9 @@
 
                     ruleEl.appendChild(leftCol);
 
+                    // 修改點：去除畫線 (line-through decoration-slate-300) 以及過度褪色，改成質感深灰色加粗 (新修改)
                     const textEl = document.createElement('p');
-                    textEl.className = `text-xs md:text-sm leading-relaxed text-slate-600 flex-1 ${rule.checked ? 'text-slate-400 font-medium line-through decoration-slate-300' : ''}`;
+                    textEl.className = `text-xs md:text-sm leading-relaxed flex-1 transition-colors ${rule.checked ? 'text-slate-800 font-medium' : 'text-slate-600'}`;
                     textEl.innerText = rule.text;
                     textEl.contentEditable = (currentMode === 'edit');
                     textEl.onblur = function() {
