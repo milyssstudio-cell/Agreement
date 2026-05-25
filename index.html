@@ -1,9 +1,9 @@
-
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>遠距期間相互約定書 - 互動編輯與顏色分類版</title>
+    <title>♡就算沒有住一起也希望我們有同步生活♡</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Caveat:wght@400..700&display=swap" rel="stylesheet">
     <!-- FontAwesome 圖示 -->
@@ -14,10 +14,10 @@
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #fef8f8;
-            background-image: radial-gradient(#fbcfe8 0.5px, transparent 0.5px), radial-gradient(#fbcfe8 0.5px, #fef8f8 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
+            background-color: #fffafb;
+            background-image: radial-gradient(#ffe4e6 0.5px, transparent 0.5px), radial-gradient(#ffe4e6 0.5px, #fffafb 0.5px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
         }
         
         .romantic-title {
@@ -32,25 +32,25 @@
         [contenteditable="true"] {
             outline: none;
             transition: all 0.2s;
-            border-bottom: 1px dashed #f472b6;
+            border-bottom: 1px dashed #fca5a5;
             padding-bottom: 2px;
         }
         [contenteditable="true"]:focus {
             background-color: #fff1f2;
-            border-bottom: 2px solid #ec4899;
+            border-bottom: 2px solid #fda4af;
             border-radius: 4px;
             padding: 2px 4px;
         }
 
-        /* 類別專屬樣式 - 點選後的背景 */
-        .category-basic-bg { background-color: rgba(243, 232, 255, 0.45); }
-        .category-flexible-bg { background-color: rgba(209, 250, 229, 0.45); }
-        .category-security-bg { background-color: rgba(255, 228, 230, 0.45); }
+        /* 低飽和度馬卡龍/莫蘭迪類別專屬樣式 */
+        .category-basic-bg { background-color: rgba(243, 232, 255, 0.6); }
+        .category-flexible-bg { background-color: rgba(236, 253, 245, 0.6); }
+        .category-security-bg { background-color: rgba(255, 241, 242, 0.6); }
 
         /* 拖曳時的視覺反饋 */
         .dragging {
             opacity: 0.5;
-            border: 2px dashed #f472b6 !important;
+            border: 2px dashed #fca5a5 !important;
             transform: scale(0.98);
         }
 
@@ -77,7 +77,7 @@
                 page-break-inside: avoid;
             }
             .signature-box {
-                border: 1px solid #d1d5db !important;
+                border: 1px solid #e2e8f0 !important;
             }
         }
 
@@ -86,34 +86,34 @@
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #fbcfe8;
+            background: #ffe4e6;
         }
         ::-webkit-scrollbar-thumb {
-            background: #f472b6;
+            background: #fca5a5;
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #db2777;
+            background: #fda4af;
         }
     </style>
 </head>
-<body class="min-h-screen pb-16 text-slate-800">
+<body class="min-h-screen pb-16 text-slate-700">
 
-    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-md border-b border-rose-100 no-print">
+    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-rose-100 no-print">
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
             <!-- 進度顯示 -->
             <div class="flex items-center gap-3 w-full md:w-auto">
-                <div class="p-2 bg-rose-100 text-rose-600 rounded-full">
+                <div class="p-2 bg-rose-50 text-rose-400 rounded-full">
                     <i class="fa-solid fa-heart-circle-check text-xl animate-pulse"></i>
                 </div>
                 <div class="flex-1 md:flex-initial">
-                    <div class="text-xs text-rose-500 font-bold">雙方共識進度</div>
+                    <div class="text-xs text-rose-400 font-bold">雙方共識進度</div>
                     <div class="flex items-center gap-2">
-                        <div class="w-32 bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                            <div id="progressBar" class="bg-gradient-to-r from-rose-400 to-pink-500 h-2.5 transition-all duration-500" style="width: 0%"></div>
+                        <div class="w-32 bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div id="progressBar" class="bg-gradient-to-r from-rose-300 via-pink-300 to-purple-300 h-2 transition-all duration-500" style="width: 0%"></div>
                         </div>
-                        <span id="progressPercent" class="text-sm font-extrabold text-rose-600">0%</span>
-                        <span id="progressRatio" class="text-xs text-slate-500">(0/0)</span>
+                        <span id="progressPercent" class="text-xs font-extrabold text-rose-400">0%</span>
+                        <span id="progressRatio" class="text-[10px] text-slate-400">(0/0)</span>
                     </div>
                 </div>
             </div>
@@ -121,38 +121,38 @@
             <!-- 控制按鈕組 -->
             <div class="flex items-center gap-2 flex-wrap justify-end w-full md:w-auto">
                 <!-- 儲存修改按鈕 (僅在編輯模式顯示) -->
-                <button id="btnManualSave" onclick="triggerManualSave()" class="hidden px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5">
+                <button id="btnManualSave" onclick="triggerManualSave()" class="hidden px-3.5 py-1.5 bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
                     <i id="saveBtnIcon" class="fa-regular fa-floppy-disk"></i> <span id="saveBtnText">儲存修改</span>
                 </button>
 
                 <!-- 模式切換器 -->
-                <div class="bg-rose-50 p-1 rounded-xl border border-rose-200 flex">
-                    <button id="btnCheckMode" onclick="setMode('check')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm">
+                <div class="bg-rose-50/50 p-1 rounded-xl border border-rose-100 flex">
+                    <button id="btnCheckMode" onclick="setMode('check')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-500 shadow-sm">
                         <i class="fa-solid fa-lock"></i> 唯讀與確認
                     </button>
-                    <button id="btnEditMode" onclick="setMode('edit')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600">
+                    <button id="btnEditMode" onclick="setMode('edit')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-rose-500">
                         <i class="fa-solid fa-pen-to-square"></i> 自由編輯
                     </button>
                 </div>
 
                 <!-- 匯入 / 匯出控制 -->
-                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                    <button onclick="triggerExport()" class="px-2.5 py-1 hover:bg-white text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯出合約檔案進行備份或傳給伴侶">
+                <div class="flex items-center gap-1 bg-slate-100/70 p-1 rounded-xl border border-slate-200">
+                    <button onclick="triggerExport()" class="px-2.5 py-1 hover:bg-white text-slate-500 hover:text-rose-400 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯出合約檔案進行備份或傳給伴侶">
                         <i class="fa-solid fa-download"></i> 匯出
                     </button>
-                    <button onclick="openImportModal()" class="px-2.5 py-1 hover:bg-white text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯入伴侶編輯好的合約檔案">
+                    <button onclick="openImportModal()" class="px-2.5 py-1 hover:bg-white text-slate-500 hover:text-rose-400 rounded-lg text-xs font-bold transition-all flex items-center gap-1" title="匯入伴侶編輯好的合約檔案">
                         <i class="fa-solid fa-upload"></i> 匯入
                     </button>
                 </div>
 
                 <!-- 功能選單 -->
-                <button onclick="copyToClipboard()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 hover:text-rose-600 rounded-xl transition-all" title="複製條款純文字">
+                <button onclick="copyToClipboard()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-500 hover:text-rose-400 rounded-xl transition-all" title="複製條款純文字">
                     <i class="fa-regular fa-copy"></i>
                 </button>
-                <button onclick="window.print()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-600 hover:text-rose-600 rounded-xl transition-all" title="列印或匯出為 PDF">
+                <button onclick="window.print()" class="p-2 bg-white hover:bg-rose-50 border border-slate-200 text-slate-500 hover:text-rose-400 rounded-xl transition-all" title="列印或匯出為 PDF">
                     <i class="fa-solid fa-print"></i>
                 </button>
-                <button onclick="triggerReset()" class="p-2 bg-white hover:bg-red-50 border border-red-200 text-red-500 rounded-xl transition-all" title="恢復預設範本">
+                <button onclick="triggerReset()" class="p-2 bg-white hover:bg-red-50 border border-red-100 text-red-400 rounded-xl transition-all" title="恢復預設範本">
                     <i class="fa-solid fa-arrow-rotate-left"></i>
                 </button>
             </div>
@@ -160,43 +160,43 @@
     </div>
 
     <!-- 匯入設定彈窗 (Modal) -->
-    <div id="importModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-100 transform transition-all scale-95 opacity-0 duration-300" id="importModalBody">
+    <div id="importModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-rose-100 transform transition-all scale-95 opacity-0 duration-300" id="importModalBody">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-file-import text-rose-500"></i> 匯入約定書資料
+                <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-rose-400"></i> 匯入約定書資料
                 </h3>
                 <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
             
-            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            <p class="text-xs text-slate-400 mb-4 leading-relaxed">
                 您可以直接選擇從伴侶那裡收到的約定書 JSON 備份檔案，或者在下方框中直接貼上約定書的設定代碼。
             </p>
 
             <!-- 檔案上傳 -->
             <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇備份檔案 (.json)</label>
-                <input type="file" id="importFile" accept=".json" onchange="handleFileSelect(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 cursor-pointer border border-dashed border-rose-200 rounded-xl p-2 bg-rose-50/10">
+                <label class="block text-xs font-bold text-slate-500 mb-1.5">選擇備份檔案 (.json)</label>
+                <input type="file" id="importFile" accept=".json" onchange="handleFileSelect(event)" class="block w-full text-xs text-slate-400 file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-500 hover:file:bg-rose-100 cursor-pointer border border-dashed border-rose-200 rounded-xl p-2 bg-rose-50/10">
             </div>
 
             <div class="relative flex py-2 items-center">
                 <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-4 text-xs text-slate-400">或直接貼上代碼</span>
+                <span class="flex-shrink mx-4 text-xs text-slate-300">或直接貼上代碼</span>
                 <div class="flex-grow border-t border-slate-200"></div>
             </div>
 
             <!-- 文字輸入 -->
             <div class="mb-4 mt-2">
-                <textarea id="importText" rows="4" placeholder='請在此貼上代碼 {"title": "遠距期間相互約定書", ...}' class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-rose-400 font-mono"></textarea>
+                <textarea id="importText" rows="4" placeholder='請在此貼上代碼 {"title": "遠距期間相互約定書", ...}' class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:outline-none focus:border-rose-300 font-mono"></textarea>
             </div>
 
             <div class="flex justify-end gap-2">
-                <button onclick="closeImportModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                <button onclick="closeImportModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-50 transition-all">
                     取消
                 </button>
-                <button onclick="submitImportText()" class="px-4 py-2 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl text-xs font-bold shadow-md hover:from-rose-500 hover:to-pink-600 transition-all">
+                <button onclick="submitImportText()" class="px-4 py-2 bg-gradient-to-r from-rose-300 to-pink-400 text-white rounded-xl text-xs font-bold shadow-sm hover:from-rose-400 hover:to-pink-500 transition-all">
                     確認匯入
                 </button>
             </div>
@@ -206,111 +206,115 @@
     <div class="max-w-4xl mx-auto px-4 mt-6">
         
         <!-- 狀態提醒 Toast -->
-        <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
-            <span id="toastIcon" class="text-rose-400"><i class="fa-solid fa-circle-info"></i></span>
-            <span id="toastMessage" class="text-sm font-medium"></span>
+        <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-800 text-white px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+            <span id="toastIcon" class="text-rose-300"><i class="fa-solid fa-circle-info"></i></span>
+            <span id="toastMessage" class="text-xs font-medium"></span>
         </div>
 
         <!-- 約定書卡片本體 -->
-        <div class="print-card bg-white rounded-3xl shadow-xl border border-rose-100 p-6 md:p-12 relative overflow-hidden">
-            <!-- 浪漫裝飾背景圖案 -->
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-100/50 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-rose-100/50 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="print-card bg-white rounded-3xl shadow-md border border-rose-50 p-6 md:p-12 relative overflow-hidden">
+            <!-- 浪漫莫蘭迪裝飾背景 -->
+            <div class="absolute -top-10 -right-10 w-44 h-44 bg-purple-50 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-44 h-44 bg-rose-50 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="text-center pb-6 border-b border-rose-100">
-                <span class="inline-block px-4 py-1.5 bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold tracking-wider rounded-full mb-4">
+            <div class="text-center pb-6 border-b border-rose-100/60">
+                <span class="inline-block px-4 py-1.5 bg-rose-50/70 border border-rose-100/60 text-rose-400 text-[10px] font-bold tracking-wider rounded-full mb-4">
                     🌸 OUR PROMISE & AGREEMENT
                 </span>
-                <h1 id="docTitle" contenteditable="false" class="romantic-title text-3xl md:text-4xl font-extrabold text-slate-800 tracking-wide mb-4">
-                    遠距期間相互約定書
+                
+                <!-- 標題 -->
+                <h1 id="docTitle" contenteditable="false" class="romantic-title text-2xl md:text-3xl font-extrabold text-rose-400 tracking-wide mb-4">
+                    ♡就算沒有住一起也希望我們有同步生活♡
                 </h1>
                 
                 <!-- 日期資訊 -->
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-sm text-slate-600 mt-2">
-                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                        <span class="font-bold text-slate-500">生效日期：</span>
-                        <span id="docEffectiveDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">2026 年 _____ 月 _____ 日</span>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-xs text-slate-500 mt-2">
+                    <div class="flex items-center gap-1.5 bg-slate-50/70 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <span class="font-bold text-slate-400">生效日期：</span>
+                        <span id="docEffectiveDate" contenteditable="false" class="font-semibold text-rose-400 min-w-[120px]">2026 年 _____ 月 _____ 日</span>
                     </div>
-                    <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                        <span class="font-bold text-slate-500">預計同住日期：</span>
-                        <span id="docCohabDate" contenteditable="false" class="font-semibold text-rose-600 min-w-[120px]">最晚 2026 年春節後</span>
+                    <div class="flex items-center gap-1.5 bg-slate-50/70 px-3 py-1.5 rounded-lg border border-slate-100">
+                        <span class="font-bold text-slate-400">預計同住日期：</span>
+                        <span id="docCohabDate" contenteditable="false" class="font-semibold text-rose-400 min-w-[120px]">最晚 2026 年春節後</span>
                     </div>
                 </div>
 
-                <p id="docSub" contenteditable="false" class="text-slate-500 text-xs mt-4 italic">
+                <p id="docSub" contenteditable="false" class="text-slate-400 text-[10px] mt-4 italic tracking-wider">
                     基本原則彈性條款（視情況調整）安全感相關
                 </p>
 
-                <!-- 顏色指標對照欄 -->
-                <div class="flex flex-wrap justify-center items-center gap-4 mt-6 pt-4 border-t border-dashed border-rose-100 text-xs">
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 font-medium border border-purple-100">
-                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> 基本原則
+                <!-- 馬卡龍顏色對照欄 -->
+                <div class="flex flex-wrap justify-center items-center gap-4 mt-6 pt-4 border-t border-dashed border-rose-100/60 text-[10px] md:text-xs">
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f5f3ff] text-[#8b79f2] font-semibold border border-[#e2dcff]">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#b19ffb]"></span> 基本原則
                     </div>
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-100">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> 彈性條款 (視情況調整)
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ecfdf5] text-[#48bca3] font-semibold border border-[#d1f5e5]">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#81e0be]"></span> 彈性條款 (視情況調整)
                     </div>
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-100">
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 安全感相關
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fff1f2] text-[#f47489] font-semibold border border-[#ffe4e8]">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#fca5a5]"></span> 安全感相關
                     </div>
                 </div>
             </div>
 
+            <!-- 條款內容容器 -->
             <div id="sectionsContainer" class="py-8 space-y-8">
                 <!-- 條款內容將由 JavaScript 動態渲染 -->
             </div>
 
-            <div class="pt-6 border-t border-rose-100">
-                <p id="docNote" contenteditable="false" class="bg-rose-50/70 border border-rose-100 rounded-2xl p-4 text-slate-600 text-sm leading-relaxed mb-8">
-                    📌 本約定書為雙方自願訂立，目的在增進安全感與信任，而非相互監控。所有條款得隨實際情況由雙方共同修訂。
+            <!-- 底註與簽署 -->
+            <div class="pt-6 border-t border-rose-100/60">
+                <p id="docNote" contenteditable="false" class="bg-[#fff1f2]/40 border border-rose-100/60 rounded-2xl p-4 text-slate-500 text-xs leading-relaxed mb-8 select-text">
+                    📌 任何事情都是可以隨時討論、調整的，這張表只是在提醒肥肥容易忘記的事情，我不喜歡一些腦補及不安感無限放大的情緒，希望肥肥能多多關心老婆在意的事情。請別因為到新環境接了新職務、有了高收入、認識新朋友，就會腦熱忘記我們的約定，啾咪。
                 </p>
 
                 <!-- 簽名欄標題 -->
                 <div class="text-center mb-6">
-                    <span class="romantic-title text-xl font-bold text-slate-700 block">🌸 攜手簽署安全感 🌸</span>
-                    <span class="text-xs text-slate-400 block mt-1">請切換至「唯讀與確認模式」後於下方進行手寫簽章</span>
+                    <span class="romantic-title text-base font-bold text-slate-600 block">🌸 攜手簽署安全感 🌸</span>
+                    <span class="text-[10px] text-slate-400 block mt-1">請切換至「唯讀與確認模式」後於下方進行手寫簽章</span>
                 </div>
 
                 <!-- 雙人手寫簽名區 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 甲方簽署 -->
-                    <div class="signature-box border border-dashed border-rose-200 rounded-2xl p-4 bg-rose-50/20 flex flex-col items-center">
+                    <!-- 甲方（男方）簽署 -->
+                    <div class="signature-box border border-dashed border-rose-100 rounded-2xl p-4 bg-rose-50/10 flex flex-col items-center">
                         <div class="w-full flex justify-between items-center mb-2">
-                            <span id="sigTitleA" contenteditable="false" class="text-sm font-bold text-rose-600">甲方（愛你的一方）</span>
-                            <button onclick="clearSignature('canvasA')" class="no-print text-xs text-slate-400 hover:text-red-500 transition-colors">
+                            <span id="sigTitleA" contenteditable="false" class="text-xs font-bold text-rose-400">簽署人（男方）</span>
+                            <button onclick="clearSignature('canvasA')" class="no-print text-[10px] text-slate-400 hover:text-red-400 transition-colors">
                                 <i class="fa-solid fa-eraser"></i> 清除
                             </button>
                         </div>
-                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-100 shadow-inner overflow-hidden">
+                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-50/50 shadow-inner overflow-hidden">
                             <canvas id="canvasA" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
                         </div>
                         <div class="w-full mt-3 flex items-center justify-between">
-                            <input id="sigNameA" type="text" placeholder="輸入印刷體姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-400 w-1/2">
-                            <span id="sigDateA" class="text-[10px] text-slate-400">簽署日: 未簽名</span>
+                            <input id="sigNameA" type="text" placeholder="輸入姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-300 w-1/2">
+                            <span id="sigDateA" class="text-[9px] text-slate-400">簽署日: 未簽名</span>
                         </div>
                     </div>
 
-                    <!-- 乙方簽署 -->
-                    <div class="signature-box border border-dashed border-rose-200 rounded-2xl p-4 bg-rose-50/20 flex flex-col items-center">
+                    <!-- 乙方（女方）簽署 -->
+                    <div class="signature-box border border-dashed border-rose-100 rounded-2xl p-4 bg-rose-50/10 flex flex-col items-center">
                         <div class="w-full flex justify-between items-center mb-2">
-                            <span id="sigTitleB" contenteditable="false" class="text-sm font-bold text-rose-600">乙方（在乎你的一方）</span>
-                            <button onclick="clearSignature('canvasB')" class="no-print text-xs text-slate-400 hover:text-red-500 transition-colors">
+                            <span id="sigTitleB" contenteditable="false" class="text-xs font-bold text-rose-400">簽署人（女方）</span>
+                            <button onclick="clearSignature('canvasB')" class="no-print text-[10px] text-slate-400 hover:text-red-400 transition-colors">
                                 <i class="fa-solid fa-eraser"></i> 清除
                             </button>
                         </div>
-                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-100 shadow-inner overflow-hidden">
+                        <div class="relative w-full h-32 bg-white rounded-xl border border-rose-50/50 shadow-inner overflow-hidden">
                             <canvas id="canvasB" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
                         </div>
                         <div class="w-full mt-3 flex items-center justify-between">
-                            <input id="sigNameB" type="text" placeholder="輸入印刷體姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-400 w-1/2">
-                            <span id="sigDateB" class="text-[10px] text-slate-400">簽署日: 未簽名</span>
+                            <input id="sigNameB" type="text" placeholder="輸入姓名" class="bg-transparent border-b border-slate-200 text-xs text-center py-1 focus:outline-none focus:border-rose-300 w-1/2">
+                            <span id="sigDateB" class="text-[9px] text-slate-400">簽署日: 未簽名</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 滿分幸福大禮包 -->
-                <div id="completedMessage" class="hidden mt-8 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center text-emerald-800 animate-bounce">
-                    <span class="text-xl">🎉 💖 恭喜！雙方已達成 100% 共識並簽署承諾！ 💖 🎉</span>
-                    <p class="text-xs text-emerald-600 mt-1">遠距離無法阻擋心貼心的距離，祝兩位甜蜜長久！</p>
+                <div id="completedMessage" class="hidden mt-8 p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl text-center text-emerald-700 animate-bounce">
+                    <span class="text-base font-bold block">🎉 💖 恭喜！雙方已達成 100% 共識並簽署承諾！ 💖 🎉</span>
+                    <p class="text-[10px] text-emerald-500 mt-1">遠距離無法阻擋心貼心的距離，祝兩位甜蜜長久！</p>
                 </div>
             </div>
         </div>
@@ -325,30 +329,34 @@
         let dragSrcSectionIdx = null;
         let dragSrcRuleIdx = null;
 
-        // 預設條款範本與顏色分類配對
+        // 馬卡龍版全新約定書模版
         const defaultTemplate = {
-            title: "遠距期間相互約定書",
+            title: "♡就算沒有住一起也希望我們有同步生活♡",
             effectiveDate: "2026 年 _____ 月 _____ 日",
             cohabDate: "最晚 2026 年春節後",
             sub: "基本原則彈性條款（視情況調整）安全感相關",
-            note: "📌 本約定書為夫妻雙方自願訂立，目的在增進安全感與信任，而非相互監控。所有條款得隨實際情況由雙方共同修訂。",
-            sigTitleA: "簽署人（甲方）",
-            sigTitleB: "簽署人（乙方）",
+            note: "📌 任何事情都是可以隨時討論、調整的，這張表只是在提醒肥肥容易忘記的事情，我不喜歡一些腦補及不安感無限放大的情緒，希望肥肥能多多關心老婆在意的事情。請別因為到新環境接了新職務、有了高收入、認識新朋友，就會腦熱忘記我們的約定，啾咪。",
+            sigTitleA: "簽署人（男方）",
+            sigTitleB: "簽署人（女方）",
+            sigNameA: "000",
+            sigNameB: "000",
             sections: [
                 {
                     id: "sec1",
-                    title: "第一條　日常聯繫",
+                    title: "第一條　我們的日常",
                     rules: [
-                        { id: "1.1", text: "雙方每日應有至少一次主動聯繫，形式不限（語音、訊息均可），時間以雙方當日作息共同決定，並得提前告知對方當日預計的忙碌程度。", checked: false, category: "basic" },
-                        { id: "1.2", text: "若當日確實無法聯繫，應事先告知，並於隔日主動補上說明。不得無故超過 24 小時未讀未回，遇特殊情況以電話確認對方狀況。", checked: false, category: "security" },
-                        { id: "1.3", text: "每週安排至少一次視訊，時間以雙方共同確認為主，聊天內容不限於事務，包含近況、心情與想法。", checked: false, category: "flexible" }
+                        { id: "1.1", text: "我們都理解並體諒雙方的忙碌程度，建立在這個基礎上，也希望再忙再累，也別把焦躁的情緒發洩在談話中。", checked: false, category: "basic" },
+                        { id: "1.2", text: "知道對方想放鬆時，會一直依靠電腦遊戲、YT、手遊放鬆，即使對方有傳訊息分享今日生活，也希望別不耐煩。", checked: false, category: "basic" },
+                        { id: "1.3", text: "想要有早安跟晚安的訊息或貼圖♡，如果早上忘記至少要有晚安。", checked: false, category: "basic" },
+                        { id: "1.4", text: "若當日確實無法聯繫，應事先告知，並於隔日主動補上說明。不得無故超過 24 小時未讀未回，遇特殊情況以電話確認對方狀況。", checked: false, category: "security" }
                     ]
                 },
                 {
                     id: "sec2",
-                    title: "第二條　飲食分享",
+                    title: "第二條　分享欲",
                     rules: [
-                        { id: "2.1", text: "鼓勵（非強制）雙方在用餐時隨手分享當餐內容（照片或文字均可），讓彼此保有日常生活的參與感。", checked: false, category: "flexible" }
+                        { id: "2.1", text: "鼓勵（非強制）雙方在用餐時，隨手分享當餐內容（照片或文字均可），讓彼此保有日常生活的參與感。", checked: false, category: "flexible" },
+                        { id: "2.2", text: "承上題，有外出活動也是唷。", checked: false, category: "flexible" }
                     ]
                 },
                 {
@@ -357,15 +365,15 @@
                     rules: [
                         { id: "3.1", text: "若預先得知有聚餐或社交場合，應提前告知對方，包含大致人員組成與預計時間，讓對方不至於聯繫不到時感到擔心。", checked: false, category: "security" },
                         { id: "3.2", text: "關於因家業需要的應酬或鄰里往來，雙方理解此為工作的一部分，不以此條款限制。惟希望事後告知大致情形，維持透明度。", checked: false, category: "flexible" },
-                        { id: "3.3", text: "若臨時發生未預期的聚餐，應於可行時盡快通知，無須等到散場，一則簡訊或短訊息即可。", checked: false, category: "security" }
+                        { id: "3.3", text: "若臨時發生未預期的聚餐，應於可行時盡快通知，無須等到散場，要有訊息告知。", checked: false, category: "security" }
                     ]
                 },
                 {
                     id: "sec4",
                     title: "第四條　飲酒",
                     rules: [
-                        { id: "4.1", text: "理解對方不喜歡在外獨自或不明情況下飲酒，因此若飲酒場合為個人選擇（非應酬必要），應事先溝通並取得共識。", checked: false, category: "security" },
-                        { id: "4.2", text: "因應酬或業務需要而飲酒，應量力而為、不過量，結束後以訊息告知對方已平安返家。", checked: false, category: "flexible" }
+                        { id: "4.1", text: "因應酬或業務需要而飲酒，應量力而為、不過量、需清醒(別因為老闆或其他阿北拱酒而挑戰自己)，結束後以訊息或照片，告知對方已平安返家。", checked: false, category: "basic" },
+                        { id: "4.2", text: "理解對方不喜歡在外獨自或不明情況下飲酒，因此若飲酒場合為個人選擇（非應酬必要），應事先溝通並取得共識。", checked: false, category: "security" }
                     ]
                 },
                 {
@@ -373,29 +381,31 @@
                     title: "第五條　與異性的互動",
                     rules: [
                         { id: "5.1", text: "雙方應尊重彼此對與異性保持適當距離的期待，避免不必要的單獨長時間相處，若有工作上的必要情況，主動告知對方。", checked: false, category: "security" },
-                        { id: "5.2", text: "以主動透明取代事後解釋：若有對方可能介意的社交情形，寧可先說，不讓對方自行猜測或想像。", checked: false, category: "security" }
+                        { id: "5.2", text: "以主動透明取代事後解釋：若有對方可能介意的社交情形，寧可先說，不讓對方自行猜測或想像。", checked: false, category: "security" },
+                        { id: "5.3", text: "非必要(其實沒有必要)，可以不用載異性的，謝謝配合。", checked: false, category: "security" }
                     ]
                 },
                 {
                     id: "sec6",
-                    title: "第六條　衝突處理",
+                    title: "第六條　誰在吵",
                     rules: [
-                        { id: "6.1", text: "爭執發生時，不以冷戰代替溝通，冷靜期不超過 24 小時，之後應主動以語音或視訊溝通，避免純文字誤解。", checked: false, category: "basic" },
+                        { id: "6.1", text: "爭執發生時，不以冷戰代替溝通，冷靜期不超過 24 小時，之後應主動以語音或視訊溝通，避免純文字誤解。(處女座可以打字)", checked: false, category: "basic" },
                         { id: "6.2", text: "若一方提出需要情緒空間，另一方應尊重，但需說明大約需要多久，不讓對方在不知情下等待。", checked: false, category: "flexible" }
                     ]
                 },
                 {
                     id: "sec7",
-                    title: "第七條　見面計畫",
+                    title: "第七條　跟我的寶寶見面",
                     rules: [
-                        { id: "7.1", text: "雙方應提前確認下一次見面的時間，原則上不讓間隔超過 _____ 週，見面費用與交通方式由雙方共同商量決定。", checked: false, category: "basic" }
+                        { id: "7.1", text: "每月的見面時間，原則上以民宿排班時間而定，見面地點可定在中間，可商量決定。", checked: false, category: "basic" }
                     ]
                 },
                 {
                     id: "sec8",
-                    title: "第八條　未來規劃",
+                    title: "第八條　小未來",
                     rules: [
-                        { id: "8.1", text: "每月至少一次討論同住時間表的進展，確認最快（10月初）或最慢（隔年春節後）同住計畫是否有變動，雙方共同決策，不單方面更動。", checked: false, category: "basic" }
+                        { id: "8.1", text: "每隔一段時間討論同住時間表的進展，確認最快（10月初）或最慢（隔年春節後）雙方進度、共同決策，不單方面更動。", checked: false, category: "basic" },
+                        { id: "8.2", text: "如有和老闆進行決議，請勿一股腦答應，請待雙方依同商議而定。", checked: false, category: "flexible" }
                     ]
                 }
             ]
@@ -415,18 +425,12 @@
             if (savedData) {
                 try {
                     const parsed = JSON.parse(savedData);
-                    // 檢查解析出來的資料是否包含合約主結構，若沒有則套用預設範本
-                    if (parsed && parsed.sections && parsed.sections.length > 0) {
-                        agreementData = parsed;
-                        // 升級舊資料：確保每個規則都有 category 欄位
-                        agreementData.sections.forEach(sec => {
-                            if (!sec.rules) sec.rules = [];
-                            sec.rules.forEach(rule => {
-                                if (!rule.category) rule.category = "basic";
-                            });
-                        });
-                    } else {
+                    // 如果還是舊標題，強制升級成最新馬卡龍同步生活版
+                    if (parsed && parsed.title !== "♡就算沒有住一起也希望我們有同步生活♡") {
                         agreementData = JSON.parse(JSON.stringify(defaultTemplate));
+                        localStorage.setItem('ldr_agreement_data', JSON.stringify(agreementData));
+                    } else {
+                        agreementData = parsed;
                     }
                 } catch(e) {
                     agreementData = JSON.parse(JSON.stringify(defaultTemplate));
@@ -447,12 +451,14 @@
             agreementData.note = document.getElementById('docNote').innerText.trim();
             agreementData.sigTitleA = document.getElementById('sigTitleA').innerText.trim();
             agreementData.sigTitleB = document.getElementById('sigTitleB').innerText.trim();
+            agreementData.sigNameA = document.getElementById('sigNameA').value.trim();
+            agreementData.sigNameB = document.getElementById('sigNameB').value.trim();
 
             localStorage.setItem('ldr_agreement_data', JSON.stringify(agreementData));
             updateProgress();
         }
 
-        // 智慧型自動重編條款 ID（如 1.1, 1.2），非標準格式則予以保留
+        // 智慧型自動重編條款 ID（如 1.1, 1.2）
         function autoReindexRuleIds() {
             agreementData.sections.forEach((sec, sIdx) => {
                 sec.rules.forEach((rule, rIdx) => {
@@ -464,31 +470,29 @@
             });
         }
 
-        // 手動儲存按鈕動作
+        // 手動儲存
         function triggerManualSave() {
             saveAgreementData();
             
-            // 變更按鈕外觀反饋
             const btn = document.getElementById('btnManualSave');
             const icon = document.getElementById('saveBtnIcon');
             const text = document.getElementById('saveBtnText');
 
-            btn.className = "px-3.5 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5 scale-95";
+            btn.className = "px-3.5 py-1.5 bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 scale-95";
             icon.className = "fa-solid fa-circle-check text-white";
             text.innerText = "已儲存修改！";
 
             showToast("整份合約與排序設定已成功儲存！", "success");
 
             setTimeout(() => {
-                btn.className = "px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-1.5";
+                btn.className = "px-3.5 py-1.5 bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5";
                 icon.className = "fa-regular fa-floppy-disk";
                 text.innerText = "儲存修改";
             }, 1500);
         }
 
-        // 匯出約定書設定檔
+        // 匯出 JSON
         function triggerExport() {
-            // 先確保取得最新修改
             saveAgreementData();
             
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(agreementData, null, 2));
@@ -499,7 +503,6 @@
             downloadAnchor.click();
             downloadAnchor.remove();
 
-            // 同時複製一組 JSON text 到用戶剪貼簿，方便不支援下載的瀏覽器使用
             const jsonText = JSON.stringify(agreementData);
             const el = document.createElement('textarea');
             el.value = jsonText;
@@ -508,10 +511,9 @@
             document.execCommand('copy');
             document.body.removeChild(el);
 
-            showToast("約定書 JSON 檔案已下載！同步設定代碼也已複製至您的剪貼簿，可直接傳給伴侶貼上！", "success");
+            showToast("設定檔下載完成！代碼也已複製至您的剪貼簿，可直接傳給伴侶匯入！", "success");
         }
 
-        // 打開匯入 Modal
         function openImportModal() {
             const modal = document.getElementById('importModal');
             const body = document.getElementById('importModalBody');
@@ -524,7 +526,6 @@
             }, 50);
         }
 
-        // 關閉匯入 Modal
         function closeImportModal() {
             const modal = document.getElementById('importModal');
             const body = document.getElementById('importModalBody');
@@ -534,7 +535,6 @@
             }, 300);
         }
 
-        // 處理匯入檔案選擇
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -545,17 +545,16 @@
                     const parsedData = JSON.parse(e.target.result);
                     applyImportedData(parsedData);
                 } catch (err) {
-                    showToast("檔案讀取失敗！請確保它是正確的備份 .json 格式檔。", "error");
+                    showToast("檔案讀取失敗！請確保格式正確。", "error");
                 }
             };
             reader.readAsText(file);
         }
 
-        // 處理手動貼上代碼匯入
         function submitImportText() {
             const txt = document.getElementById('importText').value.trim();
             if (!txt) {
-                showToast("請貼上代碼或選擇 JSON 備份檔！", "info");
+                showToast("請貼上代碼或選擇備份檔！", "info");
                 return;
             }
 
@@ -563,79 +562,66 @@
                 const parsedData = JSON.parse(txt);
                 applyImportedData(parsedData);
             } catch (err) {
-                showToast("代碼解析失敗！請確保貼上的是完整的備份代碼。", "info");
+                showToast("代碼解析失敗！請確認代碼完整性。", "info");
             }
         }
 
-        // 套用並刷新匯入的資料
         function applyImportedData(data) {
             if (!data || !data.sections) {
-                showToast("匯入的資料格式不符，缺少主要約定章節！", "info");
+                showToast("資料格式不符！", "info");
                 return;
             }
 
-            // 安全升級與欄位檢查
-            if (!data.title) data.title = "遠距期間相互約定書";
-            data.sections.forEach(sec => {
-                if (!sec.rules) sec.rules = [];
-                sec.rules.forEach(rule => {
-                    if (!rule.category) rule.category = "basic";
-                    if (rule.checked === undefined) rule.checked = false;
-                });
-            });
-
-            // 存入全域與本機儲存空間
             agreementData = data;
             localStorage.setItem('ldr_agreement_data', JSON.stringify(agreementData));
             
-            // 重新渲染畫面
             renderAgreement();
             closeImportModal();
             checkSuccess();
-            showToast("約定書內容已成功同步匯入！", "success");
+            showToast("同步完成！", "success");
         }
 
-        // 取得分類對應的視覺屬性
+        // 馬卡龍莫蘭迪色系調配 (降低飽和度)
         function getCategoryStyle(category) {
             switch(category) {
                 case 'basic':
                     return {
                         label: '基本原則',
-                        badgeClass: 'bg-purple-100 text-purple-700 border-purple-200',
-                        numClass: 'bg-purple-100 text-purple-700 border-purple-300', 
-                        leftBorderClass: 'border-l-[5px] border-l-purple-400', 
-                        checkedBgClass: 'category-basic-bg border-purple-200',
-                        bulletBg: 'bg-purple-500',
+                        badgeClass: 'bg-[#f5f3ff] text-[#8b79f2] border-[#e2dcff]',
+                        numClass: 'bg-[#f5f3ff] text-[#8b79f2] border-[#ebdcfc]', 
+                        leftBorderClass: 'border-l-[5px] border-l-[#b19ffb]', 
+                        checkedBgClass: 'category-basic-bg border-[#ebdcfc]',
+                        bulletBg: 'bg-[#b19ffb]',
                         icon: 'fa-star'
                     };
                 case 'flexible':
                     return {
                         label: '彈性條款',
-                        badgeClass: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                        numClass: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-                        leftBorderClass: 'border-l-[5px] border-l-emerald-400',
-                        checkedBgClass: 'category-flexible-bg border-emerald-200',
-                        bulletBg: 'bg-emerald-500',
+                        badgeClass: 'bg-[#ecfdf5] text-[#48bca3] border-[#d1f5e5]',
+                        numClass: 'bg-[#ecfdf5] text-[#48bca3] border-[#d1f5e5]',
+                        leftBorderClass: 'border-l-[5px] border-l-[#81e0be]',
+                        checkedBgClass: 'category-flexible-bg border-[#d1f5e5]',
+                        bulletBg: 'bg-[#81e0be]',
                         icon: 'fa-sliders'
                     };
                 case 'security':
                     return {
                         label: '安全感相關',
-                        badgeClass: 'bg-rose-100 text-rose-700 border-rose-200',
-                        numClass: 'bg-rose-100 text-rose-700 border-rose-300',
-                        leftBorderClass: 'border-l-[5px] border-l-rose-400',
-                        checkedBgClass: 'category-security-bg border-rose-200',
-                        bulletBg: 'bg-rose-500',
+                        badgeClass: 'bg-[#fff1f2] text-[#f47489] border-[#ffe4e8]',
+                        numClass: 'bg-[#fff1f2] text-[#f47489] border-[#ffe4e8]',
+                        leftBorderClass: 'border-l-[5px] border-l-[#fca5a5]',
+                        checkedBgClass: 'category-security-bg border-[#ffe4e8]',
+                        bulletBg: 'bg-[#fca5a5]',
                         icon: 'fa-heart'
                     };
                 default:
                     return {
                         label: '基本原則',
-                        badgeClass: 'bg-purple-100 text-purple-700 border-purple-200',
-                        numClass: 'bg-purple-100 text-purple-700 border-purple-300',
-                        leftBorderClass: 'border-l-[5px] border-l-purple-400',
-                        checkedBgClass: 'category-basic-bg border-purple-200',
-                        bulletBg: 'bg-purple-500',
+                        badgeClass: 'bg-[#f5f3ff] text-[#8b79f2] border-[#e2dcff]',
+                        numClass: 'bg-[#f5f3ff] text-[#8b79f2] border-[#ebdcfc]',
+                        leftBorderClass: 'border-l-[5px] border-l-[#b19ffb]',
+                        checkedBgClass: 'category-basic-bg border-[#ebdcfc]',
+                        bulletBg: 'bg-[#b19ffb]',
                         icon: 'fa-star'
                     };
             }
@@ -644,34 +630,32 @@
         function renderAgreement() {
             if (!agreementData) return;
             
-            // 寫入固定文字欄位
             document.getElementById('docTitle').innerText = agreementData.title || "";
             document.getElementById('docEffectiveDate').innerText = agreementData.effectiveDate || "";
             document.getElementById('docCohabDate').innerText = agreementData.cohabDate || "";
             document.getElementById('docSub').innerText = agreementData.sub || "";
             document.getElementById('docNote').innerText = agreementData.note || "";
-            document.getElementById('sigTitleA').innerText = agreementData.sigTitleA || "簽署人（甲方）";
-            document.getElementById('sigTitleB').innerText = agreementData.sigTitleB || "簽署人（乙方）";
+            document.getElementById('sigTitleA').innerText = agreementData.sigTitleA || "簽署人（男方）";
+            document.getElementById('sigTitleB').innerText = agreementData.sigTitleB || "簽署人（女方）";
             
-            // 姓名輸入框
-            document.getElementById('sigNameA').value = agreementData.sigNameA || "";
-            document.getElementById('sigNameB').value = agreementData.sigNameB || "";
-            document.getElementById('sigDateA').innerText = agreementData.sigDateA ? `簽署日: ${agreementData.sigDateA}` : "簽署日: 未簽署";
-            document.getElementById('sigDateB').innerText = agreementData.sigDateB ? `簽署日: ${agreementData.sigDateB}` : "簽署日: 未簽署";
+            document.getElementById('sigNameA').value = agreementData.sigNameA !== undefined ? agreementData.sigNameA : "000";
+            document.getElementById('sigNameB').value = agreementData.sigNameB !== undefined ? agreementData.sigNameB : "000";
+            document.getElementById('sigDateA').innerText = agreementData.sigDateA ? `簽署日: ${agreementData.sigDateA}` : "簽署日: 未簽名";
+            document.getElementById('sigDateB').innerText = agreementData.sigDateB ? `簽署日: ${agreementData.sigDateB}` : "簽署日: 未簽名";
 
             const container = document.getElementById('sectionsContainer');
             container.innerHTML = '';
 
             agreementData.sections.forEach((section, sIndex) => {
                 const secEl = document.createElement('div');
-                secEl.className = "section-card border-l-4 border-rose-300 pl-4 md:pl-6 py-1 transition-all";
+                secEl.className = "section-card border-l-4 border-rose-200/80 pl-4 md:pl-6 py-1 transition-all";
                 
                 // 標題列
                 const headerEl = document.createElement('div');
                 headerEl.className = "flex items-center justify-between mb-4 group";
                 
                 const titleEl = document.createElement('h3');
-                titleEl.className = "font-bold text-lg text-slate-800 tracking-wide";
+                titleEl.className = "font-bold text-base md:text-lg text-slate-800 tracking-wide";
                 titleEl.innerText = section.title;
                 titleEl.contentEditable = (currentMode === 'edit');
                 titleEl.onblur = function() {
@@ -680,37 +664,32 @@
                 };
                 headerEl.appendChild(titleEl);
 
-                // 編輯模式下顯示「刪除此章節」、「新增條款」與「大章節排序控制」
                 if (currentMode === 'edit') {
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = "flex gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity no-print items-center";
                     
-                    // 大章節上移
                     const moveUpBtn = document.createElement('button');
-                    moveUpBtn.className = `p-1 text-xs rounded hover:bg-rose-100 text-rose-500 ${sIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`;
+                    moveUpBtn.className = `p-1 text-xs rounded hover:bg-rose-50 text-rose-400 ${sIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`;
                     moveUpBtn.title = "章節上移";
                     moveUpBtn.innerHTML = "<i class='fa-solid fa-chevron-up'></i>";
                     moveUpBtn.onclick = () => moveSection(sIndex, -1);
                     actionsDiv.appendChild(moveUpBtn);
 
-                    // 大章節下移
                     const moveDownBtn = document.createElement('button');
-                    moveDownBtn.className = `p-1 text-xs rounded hover:bg-rose-100 text-rose-500 ${sIndex === agreementData.sections.length - 1 ? 'opacity-30 pointer-events-none' : ''}`;
+                    moveDownBtn.className = `p-1 text-xs rounded hover:bg-rose-50 text-rose-400 ${sIndex === agreementData.sections.length - 1 ? 'opacity-30 pointer-events-none' : ''}`;
                     moveDownBtn.title = "章節下移";
                     moveDownBtn.innerHTML = "<i class='fa-solid fa-chevron-down'></i>";
                     moveDownBtn.onclick = () => moveSection(sIndex, 1);
                     actionsDiv.appendChild(moveDownBtn);
 
-                    // 新增條例
                     const addBtn = document.createElement('button');
-                    addBtn.className = "text-xs px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-md flex items-center gap-1 font-semibold ml-2";
+                    addBtn.className = "text-[10px] px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-500 rounded-md flex items-center gap-1 font-semibold ml-2 border border-rose-100";
                     addBtn.innerHTML = "<i class='fa-solid fa-plus'></i> 條款";
                     addBtn.onclick = () => addRule(sIndex);
                     actionsDiv.appendChild(addBtn);
                     
-                    // 刪除大章節
                     const delSecBtn = document.createElement('button');
-                    delSecBtn.className = "text-xs px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-md flex items-center gap-1 ml-1";
+                    delSecBtn.className = "text-[10px] px-2 py-1 bg-red-50 hover:bg-red-100/60 text-red-500 rounded-md flex items-center gap-1 ml-1 border border-red-100";
                     delSecBtn.innerHTML = "<i class='fa-regular fa-trash-can'></i> 刪除章節";
                     delSecBtn.onclick = () => deleteSection(sIndex);
                     actionsDiv.appendChild(delSecBtn);
@@ -720,11 +699,9 @@
 
                 secEl.appendChild(headerEl);
 
-                // 條款清單
                 const listEl = document.createElement('div');
                 listEl.className = "space-y-4 min-h-[40px]"; 
 
-                // 設定跨區拖曳 Drop 目標
                 if (currentMode === 'edit') {
                     listEl.ondragover = (e) => e.preventDefault();
                     listEl.ondrop = (e) => {
@@ -745,10 +722,8 @@
                     const styleMeta = getCategoryStyle(rule.category);
                     const ruleEl = document.createElement('div');
                     
-                    // 動態加入顏色主題左側邊條與背景
-                    ruleEl.className = `clause-item flex flex-col md:flex-row md:items-start gap-3 p-4 rounded-2xl transition-all border border-y border-r border-slate-100 hover:border-slate-200 ${styleMeta.leftBorderClass} ${rule.checked ? styleMeta.checkedBgClass + ' shadow-sm' : 'bg-white'}`;
+                    ruleEl.className = `clause-item flex flex-col md:flex-row md:items-start gap-3 p-4 rounded-2xl transition-all border border-y border-r border-slate-100 hover:border-slate-200/80 ${styleMeta.leftBorderClass} ${rule.checked ? styleMeta.checkedBgClass + ' shadow-sm' : 'bg-white'}`;
                     
-                    // 電腦版拖曳事件綁定
                     if (currentMode === 'edit') {
                         ruleEl.setAttribute('draggable', 'true');
                         ruleEl.addEventListener('dragstart', (e) => {
@@ -783,7 +758,6 @@
                         });
                     }
 
-                    // 點選整列可切換核取（僅在 Check Mode 有效）
                     if (currentMode === 'check') {
                         ruleEl.onclick = function(e) {
                             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT' && e.target.tagName !== 'OPTION') {
@@ -793,51 +767,44 @@
                         ruleEl.classList.add('cursor-pointer');
                     }
 
-                    // 主要內容容器（左邊 Checkbox、序號、拖曳手把）
                     const leftCol = document.createElement('div');
-                    leftCol.className = "flex items-center gap-3.5 flex-shrink-0";
+                    leftCol.className = "flex items-center gap-3 flex-shrink-0";
 
-                    // 拖曳手把 (僅在編輯模式下顯示)
                     if (currentMode === 'edit') {
                         const dragHandle = document.createElement('span');
                         dragHandle.className = "cursor-grab active:cursor-grabbing text-slate-300 hover:text-rose-400 p-1 transition-colors no-print";
                         dragHandle.innerHTML = "<i class='fa-solid fa-grip-vertical text-sm'></i>";
-                        dragHandle.title = "拖按此處可任意上下移動此約定";
                         leftCol.appendChild(dragHandle);
                     }
 
-                    // 核取方塊
                     if (currentMode === 'check') {
                         const checkContainer = document.createElement('div');
                         checkContainer.className = "pt-0.5 flex-shrink-0";
                         const checkbox = document.createElement('input');
                         checkbox.type = "checkbox";
                         checkbox.checked = rule.checked;
-                        checkbox.className = "w-5 h-5 rounded text-rose-500 focus:ring-rose-400 cursor-pointer accent-rose-500";
+                        checkbox.className = "w-4 h-4 rounded text-rose-400 focus:ring-rose-300 cursor-pointer accent-rose-400";
                         checkbox.onchange = () => toggleCheck(sIndex, rIndex);
                         checkContainer.appendChild(checkbox);
                         leftCol.appendChild(checkContainer);
                     }
 
-                    // 標題數字：使用對應分類的主題配色
                     const numBadge = document.createElement('span');
-                    numBadge.className = `text-xs font-bold px-2 py-0.5 rounded border shadow-sm transition-colors ${styleMeta.numClass}`;
+                    numBadge.className = `text-[11px] font-bold px-2 py-0.5 rounded border transition-colors ${styleMeta.numClass}`;
                     numBadge.innerText = rule.id || `${sIndex+1}.${rIndex+1}`;
                     leftCol.appendChild(numBadge);
 
-                    // 僅在「自由編輯模式」下才顯示「分類文字標籤」，確保唯讀時畫面完全乾淨
                     if (currentMode === 'edit') {
                         const badge = document.createElement('span');
-                        badge.className = `text-[10px] font-bold px-2.5 py-0.5 rounded-full border flex items-center gap-1 flex-shrink-0 ${styleMeta.badgeClass}`;
-                        badge.innerHTML = `<i class="fa-solid ${styleMeta.icon} text-[9px]"></i> ${styleMeta.label}`;
+                        badge.className = `text-[9px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 flex-shrink-0 ${styleMeta.badgeClass}`;
+                        badge.innerHTML = `<i class="fa-solid ${styleMeta.icon} text-[8px]"></i> ${styleMeta.label}`;
                         leftCol.appendChild(badge);
                     }
 
                     ruleEl.appendChild(leftCol);
 
-                    // 條款主內容
                     const textEl = document.createElement('p');
-                    textEl.className = `text-sm leading-relaxed text-slate-700 flex-1 ${rule.checked ? 'text-slate-600 font-medium' : ''}`;
+                    textEl.className = `text-xs md:text-sm leading-relaxed text-slate-600 flex-1 ${rule.checked ? 'text-slate-400 font-medium line-through decoration-slate-300' : ''}`;
                     textEl.innerText = rule.text;
                     textEl.contentEditable = (currentMode === 'edit');
                     textEl.onblur = function() {
@@ -845,7 +812,6 @@
                         saveAgreementData();
                     };
                     
-                    // 點擊 _____ 下底線時自動聚焦選取（編輯模式輔助）
                     if (currentMode === 'edit') {
                         textEl.onfocus = function() {
                             setTimeout(() => {
@@ -865,14 +831,12 @@
                     
                     ruleEl.appendChild(textEl);
 
-                    // 編輯模式下的控制群組（分類選單、排序按鈕、刪除按鈕）
                     if (currentMode === 'edit') {
                         const editDiv = document.createElement('div');
                         editDiv.className = "flex gap-1.5 flex-shrink-0 items-center justify-end mt-2 md:mt-0 no-print";
 
-                        // 分類選擇下拉選單
                         const catSelect = document.createElement('select');
-                        catSelect.className = "text-xs border border-slate-200 rounded px-1.5 py-1 bg-white text-slate-600 focus:outline-none focus:border-rose-300";
+                        catSelect.className = "text-[10px] border border-slate-200 rounded px-1.5 py-1 bg-white text-slate-500 focus:outline-none focus:border-rose-300";
                         
                         const categories = [
                             { value: 'basic', label: '💜 基本原則' },
@@ -894,17 +858,15 @@
                             rule.category = this.value;
                             saveAgreementData();
                             renderAgreement();
-                            showToast(`已變更分類為：${this.options[this.selectedIndex].text}`, "success");
+                            showToast(`已變更分類：${this.options[this.selectedIndex].text}`, "success");
                         };
                         editDiv.appendChild(catSelect);
 
-                        // 移動微調按鈕組 (手機版救星)
                         const itemOrderDiv = document.createElement('div');
-                        itemOrderDiv.className = "flex border border-slate-200 rounded overflow-hidden bg-white text-slate-500";
+                        itemOrderDiv.className = "flex border border-slate-200 rounded overflow-hidden bg-white text-slate-400";
                         
-                        // 往上移動
                         const upBtn = document.createElement('button');
-                        upBtn.className = `p-1 px-1.5 text-[10px] hover:bg-slate-100 ${rIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`;
+                        upBtn.className = `p-1 px-1.5 text-[9px] hover:bg-slate-50 ${rIndex === 0 ? 'opacity-30' : ''}`;
                         upBtn.title = "向上移";
                         upBtn.innerHTML = "<i class='fa-solid fa-arrow-up'></i>";
                         upBtn.onclick = (e) => {
@@ -913,9 +875,8 @@
                         };
                         itemOrderDiv.appendChild(upBtn);
 
-                        // 往下移動
                         const downBtn = document.createElement('button');
-                        downBtn.className = `p-1 px-1.5 text-[10px] hover:bg-slate-100 ${rIndex === section.rules.length - 1 ? 'opacity-30 pointer-events-none' : ''}`;
+                        downBtn.className = `p-1 px-1.5 text-[9px] hover:bg-slate-50 ${rIndex === section.rules.length - 1 ? 'opacity-30' : ''}`;
                         downBtn.title = "向下移";
                         downBtn.innerHTML = "<i class='fa-solid fa-arrow-down'></i>";
                         downBtn.onclick = (e) => {
@@ -926,20 +887,18 @@
 
                         editDiv.appendChild(itemOrderDiv);
 
-                        // 編號修改 input
                         const idInput = document.createElement('input');
                         idInput.type = "text";
                         idInput.value = rule.id || `${sIndex+1}.${rIndex+1}`;
-                        idInput.className = "w-10 text-center text-xs border border-slate-200 rounded py-1 text-slate-500 focus:outline-none focus:border-rose-300";
+                        idInput.className = "w-10 text-center text-[10px] border border-slate-200 rounded py-1 text-slate-400 focus:outline-none focus:border-rose-300";
                         idInput.onchange = function() {
                             rule.id = this.value.trim();
                             saveAgreementData();
                         };
                         editDiv.appendChild(idInput);
 
-                        // 刪除按鈕
                         const delBtn = document.createElement('button');
-                        delBtn.className = "text-red-400 hover:text-red-600 p-1.5 transition-colors";
+                        delBtn.className = "text-red-300 hover:text-red-500 p-1 transition-colors";
                         delBtn.innerHTML = "<i class='fa-regular fa-trash-can'></i>";
                         delBtn.onclick = (e) => {
                             e.stopPropagation();
@@ -957,12 +916,11 @@
                 container.appendChild(secEl);
             });
 
-            // 編輯模式最底下的「新增大章節」按鈕
             if (currentMode === 'edit') {
                 const addSecContainer = document.createElement('div');
                 addSecContainer.className = "text-center pt-4 no-print";
                 const addSecBtn = document.createElement('button');
-                addSecBtn.className = "px-4 py-2 bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white rounded-xl text-sm font-bold shadow-md transition-all flex items-center gap-2 mx-auto";
+                addSecBtn.className = "px-4 py-2.5 bg-gradient-to-r from-rose-300 to-pink-400 hover:from-rose-400 hover:to-pink-500 text-white rounded-full text-xs font-bold shadow-md transition-all flex items-center gap-2 mx-auto";
                 addSecBtn.innerHTML = "<i class='fa-solid fa-folder-plus'></i> 新增條款大章節";
                 addSecBtn.onclick = addSection;
                 addSecContainer.appendChild(addSecBtn);
@@ -972,7 +930,6 @@
             updateProgress();
         }
 
-        // 大章節排序邏輯
         function moveSection(sIndex, direction) {
             const sections = agreementData.sections;
             const targetIndex = sIndex + direction;
@@ -988,7 +945,6 @@
             showToast("大章節順序調整成功！", "success");
         }
 
-        // 單條款排序邏輯
         function moveRule(sIndex, rIndex, direction) {
             const rules = agreementData.sections[sIndex].rules;
             const targetIndex = rIndex + direction;
@@ -1065,7 +1021,6 @@
             }
         }
 
-        // 重新設定為預設值
         function triggerReset() {
             if (confirm("此操作會清除所有手寫簽名與客製化的修改。確定要回復成初始的「遠距期間相互約定書」嗎？")) {
                 agreementData = JSON.parse(JSON.stringify(defaultTemplate));
@@ -1077,10 +1032,10 @@
                 clearSignature('canvasA');
                 clearSignature('canvasB');
                 
-                document.getElementById('sigNameA').value = "";
-                document.getElementById('sigNameB').value = "";
-                document.getElementById('sigDateA').innerText = "簽署日: 未簽署";
-                document.getElementById('sigDateB').innerText = "簽署日: 未簽署";
+                document.getElementById('sigNameA').value = "000";
+                document.getElementById('sigNameB').value = "000";
+                document.getElementById('sigDateA').innerText = "簽署日: 未簽名";
+                document.getElementById('sigDateB').innerText = "簽署日: 未簽名";
 
                 showToast("已重置為預設約定書範本", "info");
                 setMode('check');
@@ -1096,9 +1051,9 @@
                 if (el) {
                     el.contentEditable = (mode === 'edit');
                     if (mode === 'edit') {
-                        el.classList.add('border-b', 'border-dashed', 'border-rose-300');
+                        el.classList.add('border-b', 'border-dashed', 'border-rose-200');
                     } else {
-                        el.classList.remove('border-b', 'border-dashed', 'border-rose-300');
+                        el.classList.remove('border-b', 'border-dashed', 'border-rose-200');
                     }
                 }
             });
@@ -1108,24 +1063,23 @@
             const btnSave = document.getElementById('btnManualSave');
             
             if (mode === 'check') {
-                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm";
-                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600";
+                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-500 shadow-sm";
+                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-rose-500";
                 btnSave.classList.add('hidden'); 
                 
                 saveAgreementData();
                 renderAgreement();
-                showToast("切換為：共識簽署模式（打勾與簽署開啟）", "success");
+                showToast("已切換為：共識簽署模式", "success");
             } else {
-                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-600 shadow-sm";
-                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-500 hover:text-rose-600";
+                btnEdit.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-rose-500 shadow-sm";
+                btnCheck.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-rose-500";
                 btnSave.classList.remove('hidden'); 
                 
                 renderAgreement();
-                showToast("切換為：自由編輯模式（支援長按拖曳與排序箭頭）", "info");
+                showToast("已切換為：自由編輯模式", "info");
             }
         }
 
-        // 計算並更新進度條
         function updateProgress() {
             let total = 0;
             let checkedCount = 0;
@@ -1205,7 +1159,7 @@
             const saveName = (e, party) => {
                 agreementData[`sigName${party}`] = e.target.value;
                 agreementData[`sigDate${party}`] = e.target.value ? new Date().toLocaleDateString('zh-TW') : '';
-                document.getElementById(`sigDate${party}`).innerText = agreementData[`sigDate${party}`] ? `簽署日: ${agreementData[`sigDate${party}`]}` : "簽署日: 未簽署";
+                document.getElementById(`sigDate${party}`).innerText = agreementData[`sigDate${party}`] ? `簽署日: ${agreementData[`sigDate${party}`]}` : "簽署日: 未簽名";
                 saveAgreementData();
                 checkSuccess();
             };
@@ -1230,7 +1184,7 @@
 
         function startDrawing(e, key, canvas, ctx) {
             if (currentMode !== 'check') {
-                showToast("請先切換回「唯讀與確認模式」再進行手寫簽署喔！", "info");
+                showToast("請先切換回「唯讀與確認模式」再手寫簽名！", "info");
                 return;
             }
             const rect = canvas.getBoundingClientRect();
@@ -1249,7 +1203,7 @@
             ctx.moveTo(signatureStates[key].lastX, signatureStates[key].lastY);
             ctx.lineTo(x, y);
             
-            ctx.strokeStyle = '#334155'; 
+            ctx.strokeStyle = '#64748b'; // 優雅低飽和煙草灰
             ctx.lineWidth = 2.5;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -1287,7 +1241,7 @@
             
             const party = id === 'canvasA' ? 'A' : 'B';
             agreementData[`sigDate${party}`] = '';
-            document.getElementById(`sigDate${party}`).innerText = "簽署日: 未簽署";
+            document.getElementById(`sigDate${party}`).innerText = "簽署日: 未簽名";
             saveAgreementData();
 
             checkSuccess();
@@ -1333,14 +1287,14 @@
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#a855f7', '#10b981', '#f43f5e'] 
+                    colors: ['#b19ffb', '#81e0be', '#fca5a5'] // 莫蘭迪/馬卡龍三彩煙火
                 });
                 confetti({
                     particleCount: 3,
                     angle: 120,
                     spread: 55,
                     origin: { x: 1 },
-                    colors: ['#a855f7', '#10b981', '#f43f5e']
+                    colors: ['#b19ffb', '#81e0be', '#fca5a5']
                 });
 
                 if (Date.now() < end) {
@@ -1356,16 +1310,16 @@
 
             msg.innerText = message;
             if (type === "success") {
-                icon.innerHTML = "<i class='fa-solid fa-circle-check text-emerald-400 text-lg'></i>";
+                icon.innerHTML = "<i class='fa-solid fa-circle-check text-emerald-400 text-base'></i>";
             } else if (type === "info") {
-                icon.innerHTML = "<i class='fa-solid fa-circle-info text-rose-400 text-lg'></i>";
+                icon.innerHTML = "<i class='fa-solid fa-circle-info text-rose-300 text-base'></i>";
             }
 
             toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
             
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-            }, 4000);
+            }, 3000);
         }
 
         function copyToClipboard() {
@@ -1387,8 +1341,8 @@
             });
 
             outputText += `${agreementData.note}\n\n`;
-            outputText += `甲方簽署人: ${agreementData.sigNameA || '（未簽名）'}  日期: ${agreementData.sigDateA || '（未簽署）'}\n`;
-            outputText += `乙方簽署人: ${agreementData.sigNameB || '（未簽名）'}  日期: ${agreementData.sigDateB || '（未簽署）'}\n`;
+            outputText += `男方簽署人: ${agreementData.sigNameA || '（未簽名）'}  日期: ${agreementData.sigDateA || '（未簽署）'}\n`;
+            outputText += `女方簽署人: ${agreementData.sigNameB || '（未簽名）'}  日期: ${agreementData.sigDateB || '（未簽署）'}\n`;
 
             const el = document.createElement('textarea');
             el.value = outputText;
@@ -1397,7 +1351,7 @@
             document.execCommand('copy');
             document.body.removeChild(el);
 
-            showToast("整份合約與最新顏色分類、勾選進度，已成功複製！", "success");
+            showToast("約定書與目前進度已成功複製！", "success");
         }
     </script>
 </body>
